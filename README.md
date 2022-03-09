@@ -1,3 +1,4 @@
-#Gremlin Party
 
-Join your gremlins at [gremlin.party](http://gremlin.party "It's really fun I promise") *grablins are also invited*
+# it's the gremlin party
+
+join other fun-lovin gremlins at [gremlin.party](https://www.gremlin.party "just h*ckin play the game already")
