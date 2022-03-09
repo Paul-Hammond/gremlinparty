@@ -7,6 +7,10 @@
   "scripts": {
     "start": "tsc -build && node dist/server/server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harding-t-allen/gremlinparty.git"
+  },
   "author": "freg gremlinson",
   "license": "ISC",
   "dependencies": {
