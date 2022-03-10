@@ -1,1 +1,3 @@
-export {};
+export declare class clientthing {
+    constructor();
+}

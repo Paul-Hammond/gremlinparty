@@ -5,6 +5,9 @@ import http from 'http';
 
 import * as socketIO from 'socket.io';
 
+//import GremlinMessage from '../common/commongremlin.js';
+
+
 
 const __filename: string = fileURLToPath(import.meta.url);
 const __dirname: string = path.dirname(__filename);
@@ -26,6 +29,8 @@ class GremlinServer {
         this.io.on('connection', (socket: socketIO.Socket) => {
             console.log(`client connection: ${socket.id}`);
 
+            socket.on('gremlinmessage', this.handleGreetnig);
+
             socket.on('disconnect', () => {
                 console.log(`client disconnect: ${socket.id}`);
             });
@@ -36,6 +41,11 @@ class GremlinServer {
         this.server.listen(this.port);
         console.log(`server listening on port ${this.port}`);
     }
+
+    private handleGreetnig(/*msg: GremlinMessage*/) {
+        //console.log(`${msg.senderID} said ${msg.contents}`);
+    }
+
 }
 
 new GremlinServer(29070).start();

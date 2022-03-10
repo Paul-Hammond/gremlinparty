@@ -6,9 +6,6 @@
     },
     {
       "path": "./src/client"
-    },
-    {
-      "path": "./src/common"
     }
   ]
 }
