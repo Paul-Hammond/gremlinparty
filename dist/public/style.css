@@ -4,6 +4,8 @@ html, body {
     color: aliceblue;
 }
 
+/* (3/10/22) party bouncer styles, relevant when the gremlin arrives but hasn't yet entered the party */
+
 #partybouncer {
     position: absolute;
     top: 50%;
@@ -36,4 +38,18 @@ html, body {
 
 #anon-button:hover {
     background-color: rgb(140, 140, 140);
+}
+
+/* end of party bouncer styles */
+
+#gremlin-canvas {
+    padding: 0;
+    margin: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(94, 94, 94);
 }

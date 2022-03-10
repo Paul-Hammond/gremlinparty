@@ -27,6 +27,10 @@ class GremlinServer {
         this.io.on('connection', (socket: socketIO.Socket) => {
             console.log(`client connection: ${socket.id}`);
 
+            socket.on('gcNewUser', (name: string) => {
+                console.log(`${socket.id} sent name ${name}`);
+            });
+
             socket.on('disconnect', () => {
                 console.log(`client disconnect: ${socket.id}`);
             });
