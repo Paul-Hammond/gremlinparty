@@ -10,14 +10,14 @@
     <link rel="icon" type="image/x-icon" href="/res/icon/favicon.ico">
 </head>
 <body>
-    <h1>gremlin party goes here</h1>
-    <p>look at this army of gremlins for now</p>
-    <img src="/res/icon/favicon.ico">
-    <img src="/res/icon/favicon.ico">
-    <img src="/res/icon/favicon.ico">
-    <img src="/res/icon/favicon.ico">
-    <img src="/res/icon/favicon.ico">
-    
+
+    <div id="partybouncer">
+        <form id="name-form">
+            <input id="textbox" type="text" autocomplete="off" autofocus="true" placeholder="your name" spellcheck="false" id="textbox">
+        </form>
+        <p id="or">or</p>
+        <button id="anon-button">Enter as an anonymous gremlin</button>
+    </div>
     
     <!-- entry points for client-side code and client/server common defines -->
     <script type="module" defer src="client/client.js"></script>

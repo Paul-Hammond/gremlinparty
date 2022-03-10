@@ -3,3 +3,37 @@ html, body {
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     color: aliceblue;
 }
+
+#partybouncer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#or {
+    text-align: center;
+    font-size: 5rem;
+}
+
+#textbox {
+    border-radius: 20px;
+    text-align: center;
+    width: 600px;
+    font-size: 5rem;
+    outline-style: none;
+}
+
+#anon-button {
+    position: absolute;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 100px;
+    font-size: 2rem;
+}
+
+#anon-button:hover {
+    background-color: rgb(140, 140, 140);
+}
