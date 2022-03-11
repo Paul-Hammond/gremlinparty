@@ -64,8 +64,8 @@ class GremlinServer {
         });
 
         setInterval(() => {
-            console.log(`emitting ${GremlinWorld.getWorldUpdatePackage()}`);
             if (this.connectedGremlins.length >= 1) {
+                console.log(`emitting ${GremlinWorld.getWorldUpdatePackage()}`);
                 this.io.emit('gsWorldUpdatePackage', GremlinWorld.getWorldUpdatePackage());
             }
         }, 1000);
