@@ -15,9 +15,11 @@ class GremlinServer {
     private server: http.Server;
     private port: string | number;
     private io: socketIO.Server;
+    private numUsers: number;
 
     constructor(port: number) {
         this.port = process.env.PORT || port; 
+        this.numUsers = 0;
         const expressApp = express();
         expressApp.use(express.static(path.join(distPath, 'public')));
 
@@ -28,10 +30,14 @@ class GremlinServer {
             console.log(`client connection: ${socket.id}`);
 
             socket.on('gcNewUser', (name: string) => {
+                this.numUsers++;
                 console.log(`${socket.id} sent name ${name}`);
+
+                this.io.to(socket.id).emit('gsWelcome', this.numUsers);
             });
 
             socket.on('disconnect', () => {
+                this.numUsers--;
                 console.log(`client disconnect: ${socket.id}`);
             });
         });

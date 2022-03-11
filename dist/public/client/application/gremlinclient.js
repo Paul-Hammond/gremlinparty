@@ -11,12 +11,19 @@ export default class GremlinClient {
         this.socket.on('connect', () => {
             this.gremlinID = this.socket.id;
             this.shoutID();
+            this.gsWelcome();
         });
     }
     receiveIDFromUser(name) {
         this.gremlinUserName = name;
         console.log(`${this.gremlinID} sending name ${this.gremlinUserName} to server`);
+        //(3/10/22) tell GremlinServer what your username is and wait for a gsWelcome event
         this.socket.emit('gcNewUser', this.gremlinUserName);
+    }
+    gsWelcome() {
+        this.socket.on('gsWelcome', (n) => {
+            console.log(`server emitted gsWelcome with ${n} connected users`);
+        });
     }
     shoutID() {
         console.log(`shouting shoutING ${this.gremlinID}`);

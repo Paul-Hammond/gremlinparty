@@ -5,5 +5,6 @@ export default class GremlinClient {
     constructor();
     start(): void;
     receiveIDFromUser(name: string): void;
+    private gsWelcome;
     private shoutID;
 }

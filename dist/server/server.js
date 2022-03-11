@@ -9,6 +9,7 @@ const distPath = path.dirname(__dirname);
 class GremlinServer {
     constructor(port) {
         this.port = process.env.PORT || port;
+        this.numUsers = 0;
         const expressApp = express();
         expressApp.use(express.static(path.join(distPath, 'public')));
         this.server = new http.Server(expressApp);
@@ -16,9 +17,12 @@ class GremlinServer {
         this.io.on('connection', (socket) => {
             console.log(`client connection: ${socket.id}`);
             socket.on('gcNewUser', (name) => {
+                this.numUsers++;
                 console.log(`${socket.id} sent name ${name}`);
+                this.io.to(socket.id).emit('gsWelcome', this.numUsers);
             });
             socket.on('disconnect', () => {
+                this.numUsers--;
                 console.log(`client disconnect: ${socket.id}`);
             });
         });
