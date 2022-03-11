@@ -12,6 +12,9 @@ export default class GremlinClient {
             this.gremlinID = this.socket.id;
             this.shoutID();
             this.gsWelcome();
+            this.socket.on('gsWorldUpdatePackage', (worldPackage) => {
+                console.log(`world update package: ${worldPackage}`);
+            });
         });
     }
     receiveIDFromUser(name) {
