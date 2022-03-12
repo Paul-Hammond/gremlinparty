@@ -1,7 +1,6 @@
 html, body {
     background-color: rgb(34, 34, 34);
     font-family:Verdana, Geneva, Tahoma, sans-serif;
-    color: aliceblue;
 }
 
 /* (3/10/22) party bouncer styles, relevant when the gremlin arrives but hasn't yet entered the party */
@@ -16,6 +15,7 @@ html, body {
 #or {
     text-align: center;
     font-size: 5rem;
+    color: rgb(34, 34, 34);
 }
 
 #textbox {
@@ -34,6 +34,7 @@ html, body {
     width: 600px;
     height: 100px;
     font-size: 2rem;
+    color: rgb(94, 94, 94);
 }
 
 #anon-button:hover {

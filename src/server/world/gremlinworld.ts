@@ -1,17 +1,14 @@
-import * as socketIO from 'socket.io';
-
 export default class GremlinWorld {
     private dt: number;
     private timeOfLastUpdate: number;
     private static numGremlins: number = 0;
-    private worldUpdatePackage: number;
+    
     
     constructor() {
         GremlinWorld.numGremlins = 0;
 
         this.dt = 0;
         this.timeOfLastUpdate = performance.now();
-        this.worldUpdatePackage = 0;
         console.log('calling gremlinWorld constructor');
     }
 

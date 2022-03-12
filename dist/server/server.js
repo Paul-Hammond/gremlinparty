@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
 import * as socketIO from 'socket.io';
-import GremlinPlayer from './player/gremlinplayer.js';
+import GremlinAddress from './player/gremlinaddress.js';
 import GremlinWorld from './world/gremlinworld.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,16 +24,21 @@ class GremlinServer {
         this.io.on('connection', (socket) => {
             console.log(`client connection: ${socket.id}`);
             socket.on('gcNewUser', (name) => {
-                this.connectedGremlins.push(new GremlinPlayer(name, socket.id));
-                console.log(`+++ ${this.connectedGremlins.length} network size. ${name} connected.`);
+                this.connectedGremlins.push(new GremlinAddress(name, socket.id));
+                console.log(`+++ ${this.connectedGremlins.length} network size. ${name} joined the gremlin party.`);
                 this.gremlinWorld.addGremlin(name);
                 this.io.to(socket.id).emit('gsWelcome', this.connectedGremlins.length);
             });
             socket.on('disconnect', () => {
                 const fallenGremlin = this.getGremlinFromID(socket.id);
-                this.gremlinWorld.removeGremlin();
-                console.log(`--- ${this.connectedGremlins.length - 1} network size. ${fallenGremlin.getUsername()} disconnected.`);
-                this.connectedGremlins.splice(this.getIndexFromGremlin(fallenGremlin), 1);
+                if (!fallenGremlin) {
+                    console.log(`user ${socket.id} disconnected without joining the gremlin party`);
+                }
+                else {
+                    console.log(`--- ${this.connectedGremlins.length - 1} network size. ${fallenGremlin.getUsername()} disconnected.`);
+                    this.gremlinWorld.removeGremlin();
+                    this.connectedGremlins.splice(this.getIndexFromGremlin(fallenGremlin), 1);
+                }
             });
         });
         setInterval(() => {
@@ -41,8 +46,7 @@ class GremlinServer {
                 console.log(`emitting ${GremlinWorld.getWorldUpdatePackage()}`);
                 this.io.emit('gsWorldUpdatePackage', GremlinWorld.getWorldUpdatePackage());
             }
-        }, 1000);
-        //setInterval(this.emitWorldPackage, 1000, GremlinWorld.getWorldUpdatePackage());
+        }, 200);
     }
     getIndexFromGremlin(gremlin) {
         for (let i = 0; i < this.connectedGremlins.length; i++) {

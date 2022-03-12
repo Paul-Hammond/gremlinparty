@@ -5,7 +5,7 @@ import http from 'http';
 
 import * as socketIO from 'socket.io';
 
-import GremlinPlayer from './player/gremlinplayer.js';
+import GremlinAddress from './player/gremlinaddress.js';
 import GremlinWorld from './world/gremlinworld.js';
 
 
@@ -18,7 +18,7 @@ class GremlinServer {
     private server: http.Server;
     private port: string | number;
     private io: socketIO.Server;
-    private connectedGremlins: Array<GremlinPlayer>;
+    private connectedGremlins: Array<GremlinAddress>;
     private gremlinWorld: GremlinWorld;
     
 
@@ -45,17 +45,24 @@ class GremlinServer {
             console.log(`client connection: ${socket.id}`);
             
             socket.on('gcNewUser', (name: string) => {
-                this.connectedGremlins.push(new GremlinPlayer(name, socket.id));
-                console.log(`+++ ${this.connectedGremlins.length} network size. ${name} connected.`);
+                this.connectedGremlins.push(new GremlinAddress(name, socket.id));
+                console.log(`+++ ${this.connectedGremlins.length} network size. ${name} joined the gremlin party.`);
                 this.gremlinWorld.addGremlin(name);
                 this.io.to(socket.id).emit('gsWelcome', this.connectedGremlins.length);
             });
 
             socket.on('disconnect', () => {
-                const fallenGremlin: GremlinPlayer = this.getGremlinFromID(socket.id)!;
-                this.gremlinWorld.removeGremlin();
-                console.log(`--- ${this.connectedGremlins.length - 1} network size. ${fallenGremlin.getUsername()} disconnected.`);
-                this.connectedGremlins.splice(this.getIndexFromGremlin(fallenGremlin), 1);
+                const fallenGremlin: GremlinAddress | void = this.getGremlinFromID(socket.id);
+
+                if (!fallenGremlin) {
+                    console.log(`user ${socket.id} disconnected without joining the gremlin party`);
+                }
+                else {
+                    console.log(`--- ${this.connectedGremlins.length - 1} network size. ${fallenGremlin.getUsername()} disconnected.`);
+                    this.gremlinWorld.removeGremlin();
+                    this.connectedGremlins.splice(this.getIndexFromGremlin(fallenGremlin), 1);
+                }
+
             });
 
 
@@ -68,12 +75,11 @@ class GremlinServer {
                 console.log(`emitting ${GremlinWorld.getWorldUpdatePackage()}`);
                 this.io.emit('gsWorldUpdatePackage', GremlinWorld.getWorldUpdatePackage());
             }
-        }, 1000);
-        //setInterval(this.emitWorldPackage, 1000, GremlinWorld.getWorldUpdatePackage());
+        }, 200);
 
     }
 
-    private getIndexFromGremlin(gremlin: GremlinPlayer): number {
+    private getIndexFromGremlin(gremlin: GremlinAddress): number {
         for (let i = 0; i < this.connectedGremlins.length; i++) {
             if (this.connectedGremlins[i].getGremlinID() == gremlin.getGremlinID()) {
                 return i;
@@ -83,7 +89,7 @@ class GremlinServer {
         return NaN;
     }
 
-    private getGremlinFromIndex(index: number): GremlinPlayer | void {
+    private getGremlinFromIndex(index: number): GremlinAddress | void {
         for(let i = 0; i < this.connectedGremlins.length; i++) {
             if (this.connectedGremlins[i].getGremlinID() == this.connectedGremlins[index].getGremlinID()) {
                 return this.connectedGremlins[i];
@@ -91,7 +97,7 @@ class GremlinServer {
         }
     }
     
-    private getGremlinFromID(gremlinID: string): GremlinPlayer | void {
+    private getGremlinFromID(gremlinID: string): GremlinAddress | void {
         for (let i = 0; i < this.connectedGremlins.length; i++) {
             if (this.connectedGremlins[i].getGremlinID() == gremlinID) {
                 return this.connectedGremlins[i];

@@ -3,7 +3,6 @@ export default class GremlinWorld {
         GremlinWorld.numGremlins = 0;
         this.dt = 0;
         this.timeOfLastUpdate = performance.now();
-        this.worldUpdatePackage = 0;
         console.log('calling gremlinWorld constructor');
     }
     addGremlin(gremlin) {
