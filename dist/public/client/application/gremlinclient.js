@@ -11,7 +11,10 @@ export default class GremlinClient {
         this.socket.on('connect', () => {
             this.gremlinID = this.socket.id;
             this.shoutID();
+            //(3/12/22) socket callbacks
+            //each function corresponds to its own socket.io message 
             this.gsWelcome();
+            this.gsGremlinPackage();
             this.socket.on('gsWorldUpdatePackage', (worldPackage) => {
                 console.log(`world update package: ${worldPackage}`);
             });
@@ -23,11 +26,18 @@ export default class GremlinClient {
         //(3/10/22) tell GremlinServer what your username is and wait for a gsWelcome event
         this.socket.emit('gcNewUser', this.gremlinUserName);
     }
+    //callbacks
     gsWelcome() {
         this.socket.on('gsWelcome', (n) => {
             console.log(`server emitted gsWelcome with ${n} connected users`);
         });
     }
+    gsGremlinPackage() {
+        this.socket.on('gsGremlinPackage', ( /*package: GremlinPackage*/) => {
+            console.log('got a gsGremlinPackage');
+        });
+    }
+    //end of callbacks
     shoutID() {
         console.log(`shouting shoutING ${this.gremlinID}`);
     }

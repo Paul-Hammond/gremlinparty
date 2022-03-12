@@ -1,13 +1,13 @@
-export default class GremlinAddress {
-    private ID: string;
+export default class ConnectedClient {
+    private id: string;
     private username: string;
 
-    constructor(username: string, ID: string) {
+    constructor(ID: string, username: string) {
         this.username = username;
-        this.ID = ID;
+        this.id = ID;
     }
     getGremlinID(): string {
-        return this.ID;
+        return this.id;
     }
     getUsername(): string {
         return this.username;

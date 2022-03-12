@@ -1,23 +1,37 @@
+import Gremlin from "../player/gremlin.js";
+import GremlinPackage from "./gremlinpackage.js";
+import { getGremlinFromID, getIndexFromGremlin } from '../player/gremlin.js';
 export default class GremlinWorld {
     constructor() {
-        GremlinWorld.numGremlins = 0;
+        console.log('calling gremlinWorld constructor');
+        this.gameGremlins = new Array();
         this.dt = 0;
         this.timeOfLastUpdate = performance.now();
-        console.log('calling gremlinWorld constructor');
     }
-    addGremlin(gremlin) {
-        GremlinWorld.numGremlins++;
+    addGremlin(id, name) {
+        const newPartyGremlin = new Gremlin(id, name, 16);
+        this.gameGremlins.push(newPartyGremlin);
     }
-    removeGremlin() {
-        GremlinWorld.numGremlins--;
-    }
-    createGremlinWorldPackage() {
-        console.log(GremlinWorld.numGremlins);
-        if (GremlinWorld.numGremlins >= 1) {
+    removeGremlin(gremlin) {
+        const i = getIndexFromGremlin(gremlin, this.gameGremlins);
+        if (i) {
+            this.gameGremlins.splice(i, 1);
         }
     }
-    static getWorldUpdatePackage() {
-        return GremlinWorld.numGremlins;
+    removeGremlinFromID(id) {
+        const g = getGremlinFromID(id, this.gameGremlins);
+        if (g) {
+            const i = getIndexFromGremlin(g, this.gameGremlins);
+            this.gameGremlins.splice(i, 1);
+        }
+    }
+    createGremlinWorldPackage() {
+        const currentGremlinPackage = new GremlinPackage();
+        if (this.gameGremlins.length >= 1) {
+            for (let i = 0; i < this.gameGremlins.length; i++) {
+                currentGremlinPackage.addGremlin(this.gameGremlins[i]);
+            }
+        }
+        return currentGremlinPackage;
     }
 }
-GremlinWorld.numGremlins = 0;

@@ -1,34 +1,52 @@
+import Gremlin from "../player/gremlin.js";
+import GremlinPackage from "./gremlinpackage.js";
+import { getGremlinFromID, getGremlinFromIndex, getIndexFromGremlin } from '../player/gremlin.js';
+
 export default class GremlinWorld {
     private dt: number;
     private timeOfLastUpdate: number;
-    private static numGremlins: number = 0;
-    
+    private gameGremlins: Array<Gremlin>;
     
     constructor() {
-        GremlinWorld.numGremlins = 0;
+        console.log('calling gremlinWorld constructor');
+        this.gameGremlins = new Array();
+    
 
         this.dt = 0;
         this.timeOfLastUpdate = performance.now();
-        console.log('calling gremlinWorld constructor');
     }
 
-    public addGremlin(gremlin: string): void {
-        GremlinWorld.numGremlins++;
+    public addGremlin(id: string, name: string): void {
+        const newPartyGremlin: Gremlin = new Gremlin(id, name, 16);
+        this.gameGremlins.push(newPartyGremlin);
     }
 
-    public removeGremlin(): void {
-        GremlinWorld.numGremlins--;
+    public removeGremlin(gremlin: Gremlin): void {
+        const i: number | void = getIndexFromGremlin(gremlin, this.gameGremlins);
+        if (i) {
+            this.gameGremlins.splice(i, 1);
+        }
+
     }
 
-    public createGremlinWorldPackage(): void {
-        console.log(GremlinWorld.numGremlins);
-        if (GremlinWorld.numGremlins >= 1) {
-
+    public removeGremlinFromID(id: string): void {
+        const g: Gremlin = getGremlinFromID(id, this.gameGremlins)!;
+        if (g) {
+            const i = getIndexFromGremlin(g, this.gameGremlins)!;
+            this.gameGremlins.splice(i, 1);
         }
     }
 
-    public static getWorldUpdatePackage(): number {
-        return GremlinWorld.numGremlins;
+    public createGremlinWorldPackage(): GremlinPackage {
+        const currentGremlinPackage: GremlinPackage = new GremlinPackage();
+        
+        if (this.gameGremlins.length >= 1) {
+            for (let i = 0; i < this.gameGremlins.length; i++) {
+                currentGremlinPackage.addGremlin(this.gameGremlins[i]);
+            }
+        }
+
+        return currentGremlinPackage;
     }
 
     //(3/11/22) create a heartbeat function that emits a GremlinWorldPackage every 1/3rd second
