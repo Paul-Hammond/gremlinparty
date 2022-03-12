@@ -6,10 +6,12 @@ export default class GremlinWorld {
     private dt: number;
     private timeOfLastUpdate: number;
     private gameGremlins: Array<Gremlin>;
+    private packageCount: number;
     
     constructor() {
         console.log('calling gremlinWorld constructor');
         this.gameGremlins = new Array();
+        this.packageCount = 0;
     
 
         this.dt = 0;
@@ -37,16 +39,16 @@ export default class GremlinWorld {
         }
     }
 
-    public createGremlinWorldPackage(): GremlinPackage {
+    public createGremlinWorldPackage(): [GremlinPackage, number] {
         const currentGremlinPackage: GremlinPackage = new GremlinPackage();
-        
         if (this.gameGremlins.length >= 1) {
+            this.packageCount++;
             for (let i = 0; i < this.gameGremlins.length; i++) {
                 currentGremlinPackage.addGremlin(this.gameGremlins[i]);
             }
         }
 
-        return currentGremlinPackage;
+        return [currentGremlinPackage, this.packageCount];
     }
 
     //(3/11/22) create a heartbeat function that emits a GremlinWorldPackage every 1/3rd second

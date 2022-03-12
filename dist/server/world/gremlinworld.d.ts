@@ -4,9 +4,10 @@ export default class GremlinWorld {
     private dt;
     private timeOfLastUpdate;
     private gameGremlins;
+    private packageCount;
     constructor();
     addGremlin(id: string, name: string): void;
     removeGremlin(gremlin: Gremlin): void;
     removeGremlinFromID(id: string): void;
-    createGremlinWorldPackage(): GremlinPackage;
+    createGremlinWorldPackage(): [GremlinPackage, number];
 }

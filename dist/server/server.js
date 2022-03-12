@@ -47,11 +47,10 @@ class GremlinServer {
         //x times a second to all connected clients 
         setInterval(() => {
             if (this.connectedGremlins.length >= 1) {
-                console.log(`connected gremlins: ${this.connectedGremlins.length}`);
-                //current gremlin package = new package()
                 const currentPackage = this.gremlinWorld.createGremlinWorldPackage();
-                //emit (current gremlin package)
-                //make sure current package is deleted/wiped
+                if (currentPackage[1] % 50 == 0) {
+                    console.log(`${currentPackage[1]} current network: ${this.connectedGremlins.length}`);
+                }
                 this.io.emit('gsGremlinPackage', currentPackage);
             }
         }, 200);

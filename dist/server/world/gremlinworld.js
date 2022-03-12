@@ -5,6 +5,7 @@ export default class GremlinWorld {
     constructor() {
         console.log('calling gremlinWorld constructor');
         this.gameGremlins = new Array();
+        this.packageCount = 0;
         this.dt = 0;
         this.timeOfLastUpdate = performance.now();
     }
@@ -28,10 +29,11 @@ export default class GremlinWorld {
     createGremlinWorldPackage() {
         const currentGremlinPackage = new GremlinPackage();
         if (this.gameGremlins.length >= 1) {
+            this.packageCount++;
             for (let i = 0; i < this.gameGremlins.length; i++) {
                 currentGremlinPackage.addGremlin(this.gameGremlins[i]);
             }
         }
-        return currentGremlinPackage;
+        return [currentGremlinPackage, this.packageCount];
     }
 }
