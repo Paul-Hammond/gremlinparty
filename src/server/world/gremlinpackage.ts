@@ -2,7 +2,7 @@ import Gremlin from "../player/gremlin.js";
 import  { getIndexFromGremlin } from "../player/gremlin.js";
 
 export default class GremlinPackage {
-    private connectedGremlins: Array<Gremlin>
+    private connectedGremlins: Array<Gremlin>;
 
     constructor() {
         this.connectedGremlins = new Array();
