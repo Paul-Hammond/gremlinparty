@@ -47,9 +47,12 @@ class GremlinServer {
         //x times a second to all connected clients 
         setInterval(() => {
             if (this.connectedGremlins.length >= 1) {
+                //(3/12/22) create what boils down to a world update tick
                 const currentPackage = this.gremlinWorld.createGremlinWorldPackage();
-                if (currentPackage[1] % 50 == 0) {
-                    console.log(`${currentPackage[1]} current network: ${this.connectedGremlins.length}`);
+                //(3/12/22) this console.log isn't needed, but is nice to have the server periodically report
+                //how many GremlinPackages it has sent
+                if (currentPackage[1] % 100 == 0) {
+                    console.log(`GremlinPackage count: ${currentPackage[1]}, current network size: ${this.connectedGremlins.length}`);
                 }
                 this.io.emit('gsGremlinPackage', currentPackage);
             }
