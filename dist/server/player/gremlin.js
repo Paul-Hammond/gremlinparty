@@ -1,6 +1,6 @@
 export default class Gremlin {
     constructor(id, name, startingPos) {
-        this.gremlinID = name;
+        this.gremlinID = id;
         this.username = name;
         this.pos = startingPos;
     }

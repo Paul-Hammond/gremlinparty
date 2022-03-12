@@ -15,9 +15,6 @@ export default class GremlinClient {
             //each function corresponds to its own socket.io message 
             this.gsWelcome();
             this.gsGremlinPackage();
-            this.socket.on('gsWorldUpdatePackage', (worldPackage) => {
-                console.log(`world update package: ${worldPackage}`);
-            });
         });
     }
     receiveIDFromUser(name) {
@@ -33,8 +30,8 @@ export default class GremlinClient {
         });
     }
     gsGremlinPackage() {
-        this.socket.on('gsGremlinPackage', ( /*package: GremlinPackage*/) => {
-            console.log('got a gsGremlinPackage');
+        this.socket.on('gsGremlinPackage', (gremlinPackage) => {
+            console.log(gremlinPackage);
         });
     }
     //end of callbacks

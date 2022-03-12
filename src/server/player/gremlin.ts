@@ -4,7 +4,7 @@ export default class Gremlin {
     private pos: number;
 
     constructor(id: string, name: string, startingPos: number) {
-        this.gremlinID = name;
+        this.gremlinID = id;
         this.username = name;
         this.pos = startingPos;
     }

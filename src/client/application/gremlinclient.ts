@@ -22,10 +22,6 @@ export default class GremlinClient {
             //each function corresponds to its own socket.io message 
             this.gsWelcome();
             this.gsGremlinPackage();
-
-            this.socket.on('gsWorldUpdatePackage', (worldPackage: string) => {
-                console.log(`world update package: ${worldPackage}`);
-            });
             
         });
 
@@ -48,8 +44,8 @@ export default class GremlinClient {
     }
 
     private gsGremlinPackage() {
-        this.socket.on('gsGremlinPackage', (/*package: GremlinPackage*/) => {
-            console.log('got a gsGremlinPackage');
+        this.socket.on('gsGremlinPackage', (gremlinPackage: any) => {
+            console.log(gremlinPackage);
         })
     }
 
