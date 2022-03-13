@@ -5,15 +5,13 @@ import http from 'http';
 
 import * as socketIO from 'socket.io';
 
-//(3/12/22) a ConnectedClient is a thin tuple, it has a username and a gremlinID, that's it
-import ConnectedClient from './player/connectedclient.js';
 
 //(3/12/22) does most of the heavy lifting for the game
 import GremlinWorld from './world/gremlinworld.js';
 
 //(3/12/22) Gremlin class and helper functions
-import Gremlin from './player/gremlin.js';
-import { getGremlinFromID, getGremlinFromIndex, getIndexFromGremlin } from './player/gremlin.js';
+import Gremlin, { getPlayingGremlins } from './player/gremlin.js';
+import { getGremlinFromID,  getIndexFromGremlin } from './player/gremlin.js';
 
 
 
@@ -25,7 +23,7 @@ class GremlinServer {
     private server: http.Server;
     private port: string | number;
     private io: socketIO.Server;
-    private connectedGremlins: Array<ConnectedClient>;
+    private connectedGremlins: Array<Gremlin>;
     private gremlinWorld: GremlinWorld;
     
 
@@ -49,31 +47,31 @@ class GremlinServer {
 
         
         this.io.on('connection', (socket: socketIO.Socket) => {
-            console.log(`client connection: ${socket.id}`);
+            this.connectedGremlins.push(new Gremlin(socket.id, 16));
+            console.log(`+++ connection: ${socket.id}. ${this.connectedGremlins.length} online and ${getPlayingGremlins(this.connectedGremlins).length} playing`);
             
             socket.on('gcNewUser', (name: string) => {
-                this.connectedGremlins.push(new ConnectedClient(socket.id, name));
-                console.log(`+++ ${this.connectedGremlins.length} network size. ${name} joined the gremlin party.`);
-                this.gremlinWorld.addGremlin(socket.id, name);
+                const newGrem: Gremlin = getGremlinFromID(socket.id, this.connectedGremlins)!;
+                newGrem.startPlaying(name);
+                console.log(`${newGrem.getName()} started playing. ${this.connectedGremlins.length} online and ${getPlayingGremlins(this.connectedGremlins).length} playing`);
                 this.io.to(socket.id).emit('gsWelcome', this.connectedGremlins.length);
             });
 
-            socket.on('disconnect', () => {
-                const fallenGremlinCC: ConnectedClient | void = this.getGremlinFromID(socket.id);
 
-                if (!fallenGremlinCC) {
-                    console.log(`user ${socket.id} disconnected without joining the gremlin party`);
+            socket.on('disconnect', () => {
+                const fallenGremlin: Gremlin = getGremlinFromID(socket.id, this.connectedGremlins)!;
+
+                if (fallenGremlin.getName() == 'UnnamedGremlin') {
+                    this.connectedGremlins.splice(getIndexFromGremlin(fallenGremlin, this.connectedGremlins)!, 1);
                 }
                 else {
-                    console.log(`--- ${this.connectedGremlins.length - 1} network size. ${fallenGremlinCC.getUsername()} disconnected.`);
-                    this.gremlinWorld.removeGremlinFromID(socket.id);
-                    this.connectedGremlins.splice(this.getIndexFromGremlin(fallenGremlinCC), 1);
+                    this.connectedGremlins.splice(getIndexFromGremlin(fallenGremlin, this.connectedGremlins)!, 1);
                 }
 
+                const playerCount: number = getPlayingGremlins(this.connectedGremlins).length;
+                console.log(`--- ${fallenGremlin.gremlinID} disconnected. ${this.connectedGremlins.length} online and ${playerCount} playing`);
+
             });
-
-
-
 
         });
 
@@ -82,12 +80,16 @@ class GremlinServer {
         setInterval(() => {
             if (this.connectedGremlins.length >= 1) {
                 //(3/12/22) create what boils down to a world update tick
+
+                const players: Array<Gremlin> = getPlayingGremlins(this.connectedGremlins);
+                this.gremlinWorld.syncGremlins(players);
+                this.gremlinWorld.update(200);
                 const currentPackage = this.gremlinWorld.createGremlinWorldPackage();
 
                 //(3/12/22) this console.log isn't needed, but is nice to have the server periodically report
                 //how many GremlinPackages it has sent
-                if (currentPackage[1] % 100 == 0) {
-                    console.log(`GremlinPackage count: ${currentPackage[1]}, current network size: ${this.connectedGremlins.length}`);
+                if (currentPackage[1] % 100 == 0 && currentPackage[1] > 0) {
+                    console.log(`GremlinPackage count: ${currentPackage[1]}, ${this.connectedGremlins.length} online and ${players.length} playing`);
                 }
                 this.io.emit('gsGremlinPackage', currentPackage);
             }
@@ -95,40 +97,6 @@ class GremlinServer {
 
     }
 
-    private getIndexFromGremlin(gremlin: ConnectedClient): number {
-        for (let i = 0; i < this.connectedGremlins.length; i++) {
-            if (this.connectedGremlins[i].getGremlinID() == gremlin.getGremlinID()) {
-                return i;
-            }
-        }
-
-        return NaN;
-    }
-
-    private getGremlinFromIndex(index: number): ConnectedClient | void {
-        for(let i = 0; i < this.connectedGremlins.length; i++) {
-            if (this.connectedGremlins[i].getGremlinID() == this.connectedGremlins[index].getGremlinID()) {
-                return this.connectedGremlins[i];
-            }
-        }
-    }
-    
-    private getGremlinFromID(gremlinID: string): ConnectedClient | void {
-        for (let i = 0; i < this.connectedGremlins.length; i++) {
-            if (this.connectedGremlins[i].getGremlinID() == gremlinID) {
-                return this.connectedGremlins[i];
-            }
-        }
-    }
-
-    private getUsernamefromGremlinID(gremlinID: string): string {
-        for (let i = 0; i < this.connectedGremlins.length; i++) {
-            if (this.connectedGremlins[i].getGremlinID() == gremlinID) {
-                return this.connectedGremlins[i].getUsername();
-            }
-        }
-        return 'NotAGremlin';
-    }
 
 }
 

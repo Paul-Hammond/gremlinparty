@@ -1,12 +1,22 @@
 export default class Gremlin {
+    public isPlaying = false;
     readonly gremlinID: string;
-    readonly username: string;
-    private pos: number;
+    private name: string = 'UnnamedGremlin';
+    public pos: number;
 
-    constructor(id: string, name: string, startingPos: number) {
+    constructor(id: string, startingPos: number) {
         this.gremlinID = id;
-        this.username = name;
         this.pos = startingPos;
+    }
+
+    public startPlaying(name: string): void {
+        this.name = name;
+        this.isPlaying = true;
+    }
+
+    public getName(): string {
+        const name = this.name;
+        return name;
     }
 }
 
@@ -18,6 +28,7 @@ export function getGremlinFromID(id: string, gremlinArray: Array<Gremlin>): Grem
             return gremlinArray[i];
         }
     }
+
 }
 
 export function getGremlinFromIndex(index: number, gremlinArray: Array<Gremlin>): Gremlin | void {
@@ -34,4 +45,14 @@ export function getIndexFromGremlin(g: Gremlin, gremlinArray: Array<Gremlin>): n
             return i;
         }
     }
+}
+
+export function getPlayingGremlins(gremlinArray: Array<Gremlin>): Array<Gremlin> {
+    const playingGremlins: Array<Gremlin> = new Array();
+    for (let i = 0; i < gremlinArray.length; i++) {
+        if (gremlinArray[i].isPlaying) {
+            playingGremlins.push(gremlinArray[i]);
+        }
+    }
+    return playingGremlins;
 }

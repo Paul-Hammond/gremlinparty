@@ -1,4 +1,4 @@
-import GremlinClient from "./application/gremlinclient.js";
+import GremlinClient from './application/gremlinclient.js';
 const gc = new GremlinClient();
 gc.start();
 //(3/10/22) the party bouncer has to get the user's name (or be told the user is anonymous)
@@ -8,13 +8,13 @@ const inpFormVal = document.getElementById('textbox');
 const anonButton = document.getElementById('anon-button');
 function submitGremlinName(e) {
     e.preventDefault();
-    gc.receiveIDFromUser(inpFormVal.value);
     createGremlinCanvasHTML();
+    gc.receiveIDFromUser(inpFormVal.value);
 }
 function goAnon(e) {
     e.preventDefault();
-    gc.receiveIDFromUser('anon');
     createGremlinCanvasHTML();
+    gc.receiveIDFromUser('anon');
 }
 function createGremlinCanvasHTML() {
     partyBouncer.remove();

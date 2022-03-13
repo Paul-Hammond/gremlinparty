@@ -1,6 +1,5 @@
-import Gremlin from "../player/gremlin.js";
-import GremlinPackage from "./gremlinpackage.js";
-import { getGremlinFromID, getGremlinFromIndex, getIndexFromGremlin } from '../player/gremlin.js';
+import Gremlin from '../player/gremlin.js';
+import GremlinPackage from './gremlinpackage.js';
 
 export default class GremlinWorld {
     private dt: number;
@@ -18,34 +17,23 @@ export default class GremlinWorld {
         this.timeOfLastUpdate = performance.now();
     }
 
-    public addGremlin(id: string, name: string): void {
-        const newPartyGremlin: Gremlin = new Gremlin(id, name, 16);
-        this.gameGremlins.push(newPartyGremlin);
-    }
-
-    public removeGremlin(gremlin: Gremlin): void {
-        const i: number | void = getIndexFromGremlin(gremlin, this.gameGremlins);
-        if (i) {
-            this.gameGremlins.splice(i, 1);
-        }
+    public update(dt: number): void {
 
     }
 
-    public removeGremlinFromID(id: string): void {
-        const g: Gremlin = getGremlinFromID(id, this.gameGremlins)!;
-        if (g) {
-            const i = getIndexFromGremlin(g, this.gameGremlins)!;
-            this.gameGremlins.splice(i, 1);
-        }
+    public syncGremlins(gremlinPlayers: Array<Gremlin>) {
+        this.gameGremlins = gremlinPlayers;
     }
+
 
     public createGremlinWorldPackage(): [GremlinPackage, number] {
         const currentGremlinPackage: GremlinPackage = new GremlinPackage();
         if (this.gameGremlins.length >= 1) {
             this.packageCount++;
-            for (let i = 0; i < this.gameGremlins.length; i++) {
-                currentGremlinPackage.addGremlin(this.gameGremlins[i]);
-            }
+            currentGremlinPackage.populateGremlins(this.gameGremlins);
+        }
+        else {
+            this.packageCount = 0;
         }
 
         return [currentGremlinPackage, this.packageCount];

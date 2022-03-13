@@ -1,6 +1,7 @@
 export default class gcGremlin {
-    private gremlinID;
-    private username;
-    private pos;
+    readonly gremlinID: string;
+    readonly username: string;
+    pos: number;
     constructor(id: string, name: string, startingPos: number);
+    getPosition(): number;
 }

@@ -4,4 +4,8 @@ export default class gcGremlin {
         this.username = name;
         this.pos = startingPos;
     }
+    getPosition() {
+        const pos = this.pos;
+        return pos;
+    }
 }

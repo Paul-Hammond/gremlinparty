@@ -1,5 +1,5 @@
 
-import GremlinClient from "./application/gremlinclient.js";
+import GremlinClient from './application/gremlinclient.js';
 
 
 const gc: GremlinClient = new GremlinClient();
@@ -13,14 +13,14 @@ const anonButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById
 
 function submitGremlinName(e: SubmitEvent) {
     e.preventDefault();
-    gc.receiveIDFromUser(inpFormVal.value)
     createGremlinCanvasHTML();
+    gc.receiveIDFromUser(inpFormVal.value)
 }
 
 function goAnon(e: MouseEvent) {
     e.preventDefault();
-    gc.receiveIDFromUser('anon');
     createGremlinCanvasHTML();
+    gc.receiveIDFromUser('anon');
 }
 
 function createGremlinCanvasHTML() {

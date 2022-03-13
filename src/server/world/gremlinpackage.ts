@@ -1,5 +1,4 @@
-import Gremlin from "../player/gremlin.js";
-import  { getIndexFromGremlin } from "../player/gremlin.js";
+import Gremlin from '../player/gremlin.js';
 
 export default class GremlinPackage {
     private connectedGremlins: Array<Gremlin>;
@@ -8,14 +7,7 @@ export default class GremlinPackage {
         this.connectedGremlins = new Array();
     }
 
-    addGremlin(gremlin: Gremlin): void {
-        this.connectedGremlins.push(gremlin);
-    }
-
-    removeGremlin(gremlin: Gremlin): void {
-        const i: number | void = getIndexFromGremlin(gremlin, this.connectedGremlins);
-        if (i) {
-            this.connectedGremlins.splice(i, 1);
-        }
+    public populateGremlins(gArray: Array<Gremlin>) {
+        this.connectedGremlins = gArray;
     }
 }

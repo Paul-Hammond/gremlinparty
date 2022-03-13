@@ -1,8 +1,17 @@
 export default class Gremlin {
-    constructor(id, name, startingPos) {
+    constructor(id, startingPos) {
+        this.isPlaying = false;
+        this.name = 'UnnamedGremlin';
         this.gremlinID = id;
-        this.username = name;
         this.pos = startingPos;
+    }
+    startPlaying(name) {
+        this.name = name;
+        this.isPlaying = true;
+    }
+    getName() {
+        const name = this.name;
+        return name;
     }
 }
 //(3/12/22) gremlin helper functions
@@ -26,4 +35,13 @@ export function getIndexFromGremlin(g, gremlinArray) {
             return i;
         }
     }
+}
+export function getPlayingGremlins(gremlinArray) {
+    const playingGremlins = new Array();
+    for (let i = 0; i < gremlinArray.length; i++) {
+        if (gremlinArray[i].isPlaying) {
+            playingGremlins.push(gremlinArray[i]);
+        }
+    }
+    return playingGremlins;
 }
