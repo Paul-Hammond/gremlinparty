@@ -1,10 +1,14 @@
+import Vec2 from '../math/vec2';
+
 export default class Gremlin {
-    public isPlaying = false;
     readonly gremlinID: string;
     private name: string = 'UnnamedGremlin';
-    public pos: number;
+    public pos: Vec2;
+    
+    //(3/13/22) server specific, every gremlin on the client (gcGremlin) is assumed to be playing
+    public isPlaying = false;
 
-    constructor(id: string, startingPos: number) {
+    constructor(id: string, startingPos: Vec2) {
         this.gremlinID = id;
         this.pos = startingPos;
     }

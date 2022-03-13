@@ -1,9 +1,10 @@
+import Vec2 from '../math/vec2';
 export default class Gremlin {
-    isPlaying: boolean;
     readonly gremlinID: string;
     private name;
-    pos: number;
-    constructor(id: string, startingPos: number);
+    pos: Vec2;
+    isPlaying: boolean;
+    constructor(id: string, startingPos: Vec2);
     startPlaying(name: string): void;
     getName(): string;
 }

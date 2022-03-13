@@ -1,7 +1,8 @@
 export default class Gremlin {
     constructor(id, startingPos) {
-        this.isPlaying = false;
         this.name = 'UnnamedGremlin';
+        //(3/13/22) server specific, every gremlin on the client (gcGremlin) is assumed to be playing
+        this.isPlaying = false;
         this.gremlinID = id;
         this.pos = startingPos;
     }

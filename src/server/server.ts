@@ -5,6 +5,8 @@ import http from 'http';
 
 import * as socketIO from 'socket.io';
 
+import NumberGenerator from './math/numbergenerator.js';
+import Vec2 from './math/vec2.js';
 
 //(3/12/22) does most of the heavy lifting for the game
 import GremlinWorld from './world/gremlinworld.js';
@@ -12,6 +14,7 @@ import GremlinWorld from './world/gremlinworld.js';
 //(3/12/22) Gremlin class and helper functions
 import Gremlin, { getPlayingGremlins } from './player/gremlin.js';
 import { getGremlinFromID,  getIndexFromGremlin } from './player/gremlin.js';
+
 
 
 
@@ -47,7 +50,8 @@ class GremlinServer {
 
         
         this.io.on('connection', (socket: socketIO.Socket) => {
-            this.connectedGremlins.push(new Gremlin(socket.id, 16));
+            const randomVec: Vec2 = NumberGenerator.generateVec(new Vec2(100, 100), new Vec2(1266, 668));
+            this.connectedGremlins.push(new Gremlin(socket.id, randomVec));
             console.log(`+++ connection: ${socket.id}. ${this.connectedGremlins.length} online and ${getPlayingGremlins(this.connectedGremlins).length} playing`);
             
             socket.on('gcNewUser', (name: string) => {

@@ -33,6 +33,7 @@ export default class GremlinCanvas {
             this.fpsIndicator = 'fps:' + Math.floor(((1/dt) * 1000));
             this.timeFpsIndicatorLastUpdated = performance.now();
         }
+
     }
 
     public render(): void {
@@ -42,8 +43,11 @@ export default class GremlinCanvas {
         this.ctx.fillStyle = 'black';
         this.ctx.fillText(this.fpsIndicator, 5, 20);
 
-        for (let i = 0; i < this.fellowGremlins.length; i++) {
-            this.ctx.fillText(this.fellowGremlins[i].username, 200, 20 + (i * 25));
-        }
+        this.fellowGremlins.forEach( gremlin => {
+            this.ctx.drawImage(gremlin.sprite, gremlin.pos.x, gremlin.pos.y);
+            //nameLength is required to be able to center the gremlin's name above their head
+            const nameLength: number = this.ctx.measureText(gremlin.username).width;
+            this.ctx.fillText(gremlin.username, gremlin.pos.x + (gremlin.sprite.width / 2) - (nameLength / 2), gremlin.pos.y - 25);
+        });
     }
 }

@@ -24,8 +24,10 @@ export default class GremlinCanvas {
         this.ctx.font = '24px helvetica';
         this.ctx.fillStyle = 'black';
         this.ctx.fillText(this.fpsIndicator, 5, 20);
-        for (let i = 0; i < this.fellowGremlins.length; i++) {
-            this.ctx.fillText(this.fellowGremlins[i].username, 200, 20 + (i * 25));
-        }
+        this.fellowGremlins.forEach(gremlin => {
+            this.ctx.drawImage(gremlin.sprite, gremlin.pos.x, gremlin.pos.y);
+            const nameLength = this.ctx.measureText(gremlin.username).width;
+            this.ctx.fillText(gremlin.username, gremlin.pos.x + (gremlin.sprite.width / 2) - (nameLength / 2), gremlin.pos.y - 25);
+        });
     }
 }
