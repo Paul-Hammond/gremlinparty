@@ -93,7 +93,7 @@ class GremlinServer {
 
                 const players: Array<Gremlin> = getPlayingGremlins(this.connectedGremlins);
                 this.gremlinWorld.syncGremlins(players);
-                this.gremlinWorld.update(200);
+                this.gremlinWorld.update(100);
                 const currentPackage = this.gremlinWorld.createGremlinWorldPackage();
 
                 //(3/12/22) this console.log isn't needed, but is nice to have the server periodically report
@@ -103,7 +103,7 @@ class GremlinServer {
                 }
                 this.io.emit('gsGremlinPackage', currentPackage);
             }
-        }, 200);
+        }, 100);
 
     }
 

@@ -59,7 +59,7 @@ class GremlinServer {
                 //(3/12/22) create what boils down to a world update tick
                 const players = getPlayingGremlins(this.connectedGremlins);
                 this.gremlinWorld.syncGremlins(players);
-                this.gremlinWorld.update(200);
+                this.gremlinWorld.update(100);
                 const currentPackage = this.gremlinWorld.createGremlinWorldPackage();
                 //(3/12/22) this console.log isn't needed, but is nice to have the server periodically report
                 //how many GremlinPackages it has sent
@@ -68,7 +68,7 @@ class GremlinServer {
                 }
                 this.io.emit('gsGremlinPackage', currentPackage);
             }
-        }, 200);
+        }, 100);
     }
 }
 const gs = new GremlinServer(29070);
