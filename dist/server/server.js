@@ -49,7 +49,7 @@ class GremlinServer {
             });
             //client commands
             socket.on('gcStateChangeCommand', (gcStateChangeCommand) => {
-                this.gremlinWorld.changeGremlinState(socket.id, gcStateChangeCommand);
+                this.gremlinWorld.dispatchCommandToID(socket.id, gcStateChangeCommand);
             });
         });
         //(3/12/22) effectively the GremlinServer update function. emits the gsGremlinPackage message

@@ -80,7 +80,7 @@ class GremlinServer {
             //client commands
 
             socket.on('gcStateChangeCommand', (gcStateChangeCommand: any) => {
-                this.gremlinWorld.changeGremlinState(socket.id, gcStateChangeCommand);
+                this.gremlinWorld.dispatchCommandToID(socket.id, gcStateChangeCommand);
             });
 
         });

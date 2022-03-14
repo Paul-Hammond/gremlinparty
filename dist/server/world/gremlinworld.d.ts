@@ -7,7 +7,7 @@ export default class GremlinWorld {
     private packageCount;
     constructor();
     update(dt: number): void;
-    changeGremlinState(id: string, gcStateChangeCommand: any): void;
+    dispatchCommandToID(id: string, gcStateChangeCommand: any): void;
     syncGremlins(gremlinPlayers: Array<Gremlin>): void;
     createGremlinWorldPackage(): [GremlinPackage, number];
 }

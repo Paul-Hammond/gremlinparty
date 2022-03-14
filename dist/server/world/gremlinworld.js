@@ -10,53 +10,13 @@ export default class GremlinWorld {
     }
     update(dt) {
         this.gameGremlins.forEach(gremlin => {
-            if (gremlin.isMovingUp) {
-                gremlin.pos.offsetY((.15 * dt) * -1);
-            }
-            if (gremlin.isMovingLeft) {
-                gremlin.pos.offsetX((.15 * dt) * -1);
-            }
-            if (gremlin.isMovingRight) {
-                gremlin.pos.offsetX(.15 * dt);
-            }
-            if (gremlin.isMovingDown) {
-                gremlin.pos.offsetY(.15 * dt);
-            }
+            gremlin.update(dt, this.gameGremlins);
         });
     }
-    changeGremlinState(id, gcStateChangeCommand) {
+    dispatchCommandToID(id, gcStateChangeCommand) {
         const gremlin = getGremlinFromID(id, this.gameGremlins);
         if (gremlin) {
-            switch (gcStateChangeCommand.commandTitle) {
-                case 'gcStartMoveUpCommand':
-                    gremlin.isMovingDown = false;
-                    gremlin.isMovingUp = true;
-                    break;
-                case 'gcStopMoveUpCommand':
-                    gremlin.isMovingUp = false;
-                    break;
-                case 'gcStartMoveLeftCommand':
-                    gremlin.isMovingRight = false;
-                    gremlin.isMovingLeft = true;
-                    break;
-                case 'gcStopMoveLeftCommand':
-                    gremlin.isMovingLeft = false;
-                    break;
-                case 'gcStartMoveDownCommand':
-                    gremlin.isMovingUp = false;
-                    gremlin.isMovingDown = true;
-                    break;
-                case 'gcStopMoveDownCommand':
-                    gremlin.isMovingDown = false;
-                    break;
-                case 'gcStartMoveRightCommand':
-                    gremlin.isMovingLeft = false;
-                    gremlin.isMovingRight = true;
-                    break;
-                case 'gcStopMoveRightCommand':
-                    gremlin.isMovingRight = false;
-                    break;
-            }
+            gremlin.receivegcCommand(gcStateChangeCommand);
         }
     }
     syncGremlins(gremlinPlayers) {
