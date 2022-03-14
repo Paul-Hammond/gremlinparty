@@ -47,6 +47,10 @@ class GremlinServer {
                 const playerCount = getPlayingGremlins(this.connectedGremlins).length;
                 console.log(`--- ${fallenGremlin.gremlinID} disconnected. ${this.connectedGremlins.length} online and ${playerCount} playing`);
             });
+            //client commands
+            socket.on('gcStateChangeCommand', (gcStateChangeCommand) => {
+                this.gremlinWorld.changeGremlinState(socket.id, gcStateChangeCommand);
+            });
         });
         //(3/12/22) effectively the GremlinServer update function. emits the gsGremlinPackage message
         //x times a second to all connected clients 

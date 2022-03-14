@@ -2,8 +2,10 @@
 import { io } from 'https://cdn.socket.io/4.3.0/socket.io.esm.min.js';
 import gcGremlin from '../player/gcgremlin.js';
 import GremlinCanvas from './gremlincanvas.js';
+import gcCommand from '../player/commands/gcCommand.js';
 export default class GremlinClient {
     constructor() {
+        this.hasEmittedThisFrame = false;
         console.log('henlo this is the client speaking');
         this.isPlaying = false;
         this.socket = io();
@@ -23,6 +25,9 @@ export default class GremlinClient {
             this.gsWelcome();
             this.gsGremlinPackage();
         });
+        document.onkeyup = this.handleKeyUp.bind(this);
+        document.onkeydown = this.handleKeyDown.bind(this);
+        //document.onmousemove = this
     }
     receiveIDFromUser(name) {
         this.gremlinUserName = name;
@@ -63,9 +68,58 @@ export default class GremlinClient {
         if (this.isPlaying) {
             this.dt = performance.now() - this.timeOfLastUpdate;
             this.timeOfLastUpdate = performance.now();
+            this.hasEmittedThisFrame = false;
             this.update(this.dt);
             this.render();
+            // const cmd = this.handleInput();
+            // if (cmd) {
+            //     this.socket.emit('gcCommand', cmd);
+            // }
             requestAnimationFrame(this.loop.bind(this));
+        }
+    }
+    handleKeyDown(kEvt) {
+        if (this.isPlaying) {
+            switch (kEvt.code) {
+                case 'KeyW':
+                    const startMoveUpCommand = new gcCommand(this.socket.id, 'gcStartMoveUpCommand');
+                    this.socket.emit('gcStateChangeCommand', startMoveUpCommand);
+                    break;
+                case 'KeyA':
+                    const startMoveLeftCommand = new gcCommand(this.socket.id, 'gcStartMoveLeftCommand');
+                    this.socket.emit('gcStateChangeCommand', startMoveLeftCommand);
+                    break;
+                case 'KeyS':
+                    const startMoveDownCommand = new gcCommand(this.socket.id, 'gcStartMoveDownCommand');
+                    this.socket.emit('gcStateChangeCommand', startMoveDownCommand);
+                    break;
+                case 'KeyD':
+                    const startMoveRightCommand = new gcCommand(this.socket.id, 'gcStartMoveRightCommand');
+                    this.socket.emit('gcStateChangeCommand', startMoveRightCommand);
+                    break;
+            }
+        }
+    }
+    handleKeyUp(kEvt) {
+        if (this.isPlaying) {
+            switch (kEvt.code) {
+                case 'KeyW':
+                    const stopMoveUpCommand = new gcCommand(this.socket.id, 'gcStopMoveUpCommand');
+                    this.socket.emit('gcStateChangeCommand', stopMoveUpCommand);
+                    break;
+                case 'KeyA':
+                    const stopMoveLeftCommand = new gcCommand(this.socket.id, 'gcStopMoveLeftCommand');
+                    this.socket.emit('gcStateChangeCommand', stopMoveLeftCommand);
+                    break;
+                case 'KeyS':
+                    const stopMoveDownCommand = new gcCommand(this.socket.id, 'gcStopMoveDownCommand');
+                    this.socket.emit('gcStateChangeCommand', stopMoveDownCommand);
+                    break;
+                case 'KeyD':
+                    const stopMoveRightCommand = new gcCommand(this.socket.id, 'gcStopMoveRightCommand');
+                    this.socket.emit('gcStateChangeCommand', stopMoveRightCommand);
+                    break;
+            }
         }
     }
     update(dt) {

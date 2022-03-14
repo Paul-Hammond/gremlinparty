@@ -4,6 +4,7 @@ export default class gcGremlin {
     readonly gremlinID: string;
     readonly username: string;
     public pos: Vec2;
+    //readonly isPlayer: boolean;
 
     //(3/13/22) client specific
     public sprite: HTMLImageElement;

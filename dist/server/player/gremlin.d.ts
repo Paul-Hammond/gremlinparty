@@ -4,6 +4,10 @@ export default class Gremlin {
     private name;
     pos: Vec2;
     isPlaying: boolean;
+    isMovingUp: boolean;
+    isMovingDown: boolean;
+    isMovingLeft: boolean;
+    isMovingRight: boolean;
     constructor(id: string, startingPos: Vec2);
     startPlaying(name: string): void;
     getName(): string;

@@ -3,6 +3,10 @@ export default class Gremlin {
         this.name = 'UnnamedGremlin';
         //(3/13/22) server specific, every gremlin on the client (gcGremlin) is assumed to be playing
         this.isPlaying = false;
+        this.isMovingUp = false;
+        this.isMovingDown = false;
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
         this.gremlinID = id;
         this.pos = startingPos;
     }

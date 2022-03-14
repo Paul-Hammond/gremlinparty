@@ -7,6 +7,7 @@ export default class GremlinClient {
     private dt;
     private timeOfLastUpdate;
     private gCanvas;
+    private hasEmittedThisFrame;
     constructor();
     start(): void;
     receiveIDFromUser(name: string): void;
@@ -14,6 +15,8 @@ export default class GremlinClient {
     private gsGremlinPackage;
     private shoutID;
     private loop;
+    private handleKeyDown;
+    private handleKeyUp;
     private update;
     private render;
 }
