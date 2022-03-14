@@ -119,18 +119,33 @@ export default class MovementState extends GremlinState {
         const owner: Gremlin = getGremlinFromID(this.ownerID, gremlins)!;
         const ownerName: string = owner.getName();
 
-        if (this.direction == Direction.Up) {
-            owner.pos.offsetY((.15 * dt) * -1);
-        }
-        if (this.direction == Direction.Down) {
-            owner.pos.offsetY(.15 * dt);
-        }
-        if (this.direction == Direction.Left) {
-            owner.pos.offsetX((.15 * dt) * -1);
-        }
-        if (this.direction == Direction.Right) {
-            owner.pos.offsetX(.15 * dt);
-        }
+        
+        switch (this.direction) {
+            case Direction.Up:
+                owner.pos.offsetY(-.15 * dt);
+                break;
+            case Direction.UpLeft:
+                owner.pos.offsetXY(-.11 * dt, -.11 * dt);
+                break;
+            case Direction.UpRight:
+                owner.pos.offsetXY(.11 * dt, -.11 * dt);
+                break;
+            case Direction.Down:
+                owner.pos.offsetY(.15 * dt);
+                break;
+            case Direction.DownLeft:
+                owner.pos.offsetXY(-.11 * dt, .11 * dt);
+                break;
+            case Direction.DownRight:
+                owner.pos.offsetXY(.11 * dt, .11 * dt);
+                break;
+            case Direction.Left:
+                owner.pos.offsetX(-.11 * dt);
+                break;
+            case Direction.Right:
+                owner.pos.offsetX(.11 * dt);
+                break;
+        } 
 
     }
 }
