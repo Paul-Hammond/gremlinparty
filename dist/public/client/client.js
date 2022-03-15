@@ -16,6 +16,7 @@ function goAnon(e) {
     createGremlinCanvasHTML();
     gc.receiveIDFromUser('anon');
 }
+//(3/15/22) this function now also controls the release/patch version. remember to sync it with github releases!
 function createGremlinCanvasHTML() {
     partyBouncer.remove();
     const canvas = document.createElement('canvas');
@@ -23,6 +24,31 @@ function createGremlinCanvasHTML() {
     canvas.width = 1366;
     canvas.height = 768;
     document.body.append(canvas);
+    const footer = document.createElement('footer');
+    footer.id = 'gremlin-footer';
+    const gremlinVersion = document.createElement('p');
+    gremlinVersion.id = 'gremlin-version';
+    //******-----------ATTENTION-----------******
+    //THIS WHAT YOU WANT TO EDIT EVERY RELEASE
+    gremlinVersion.textContent = 'gremlin party pre-alpha-v0.0.1 (latest build: March 15th, 2022)';
+    //LOOK HERE
+    //******-----------ATTENTION-----------******
+    const patchNotes = document.createElement('a');
+    patchNotes.textContent = 'patch notes';
+    patchNotes.id = 'gremlin-notes';
+    patchNotes.target = '_blank';
+    //*** --- don't forget to add a release on the github repo when you edit the version lole --- ***
+    patchNotes.href = 'https://github.com/martiangremlin/gremlinparty/releases';
+    //*** --- this line above me right here --- ***
+    const twitter = document.createElement('a');
+    twitter.textContent = 'twitter';
+    twitter.id = 'gremlin-twitter';
+    twitter.target = '_blank';
+    twitter.href = 'https://twitter.com/thegremlinparty';
+    footer.appendChild(gremlinVersion);
+    footer.appendChild(patchNotes);
+    footer.appendChild(twitter);
+    document.body.append(footer);
 }
 inpForm.onsubmit = submitGremlinName;
 anonButton.onclick = goAnon;

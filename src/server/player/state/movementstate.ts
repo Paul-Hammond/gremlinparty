@@ -90,8 +90,6 @@ export default class MovementState extends GremlinState {
             this.direction = Direction.Idle;
         }
 
-        console.log(Direction[this.direction]);
-
         switch (this.direction) {
             case Direction.Up:
                 owner.pos.offsetY(-.15 * dt);

@@ -54,3 +54,26 @@ html, body {
     right: 0;
     background-color: rgb(94, 94, 94);
 }
+
+#gremlin-footer {
+    text-align: center;
+    font-size: 10px;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    position: absolute;
+}
+
+#gremlin-version {
+    color:rgb(200, 200, 200);
+    margin: 1px;
+}
+
+#gremlin-notes {
+    margin-right: 5px;
+    color: rgb(51, 167, 255);
+}
+
+#gremlin-twitter {
+    color: rgb(51, 167, 255);
+}
