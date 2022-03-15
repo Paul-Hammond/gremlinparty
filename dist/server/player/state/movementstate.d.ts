@@ -2,6 +2,10 @@ import GremlinState from './gremlinstate.js';
 import Gremlin from '../gremlin.js';
 export default class MovementState extends GremlinState {
     ownerID: string;
+    private upPressed;
+    private downPressed;
+    private leftPressed;
+    private rightPressed;
     private direction;
     constructor(ownerID: string);
     addDirection(dir: Direction): void;

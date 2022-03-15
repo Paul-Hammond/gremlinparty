@@ -3,108 +3,81 @@ import { getGremlinFromID } from '../gremlin.js';
 export default class MovementState extends GremlinState {
     constructor(ownerID) {
         super(ownerID);
+        this.upPressed = false;
+        this.downPressed = false;
+        this.leftPressed = false;
+        this.rightPressed = false;
         this.direction = Direction.Idle;
         this.ownerID = ownerID;
     }
     addDirection(dir) {
         switch (dir) {
             case Direction.Up:
-                if (this.direction == Direction.Left) {
-                    this.direction = Direction.UpLeft;
-                }
-                else if (this.direction == Direction.Right) {
-                    this.direction = Direction.UpRight;
-                }
-                else {
-                    this.direction = Direction.Up;
-                }
+                this.upPressed = true;
                 break;
             case Direction.Down:
-                if (this.direction == Direction.Left) {
-                    this.direction = Direction.DownLeft;
-                }
-                else if (this.direction == Direction.Right) {
-                    this.direction = Direction.DownRight;
-                }
-                else {
-                    this.direction = Direction.Down;
-                }
+                this.downPressed = true;
                 break;
             case Direction.Left:
-                if (this.direction == Direction.Up) {
-                    this.direction = Direction.UpLeft;
-                }
-                else if (this.direction == Direction.Down) {
-                    this.direction = Direction.DownLeft;
-                }
-                else {
-                    this.direction = Direction.Left;
-                }
+                this.leftPressed = true;
                 break;
             case Direction.Right:
-                if (this.direction == Direction.Up) {
-                    this.direction = Direction.UpRight;
-                }
-                else if (this.direction == Direction.Down) {
-                    this.direction = Direction.DownRight;
-                }
-                else {
-                    this.direction = Direction.Right;
-                }
+                this.rightPressed = true;
                 break;
         }
     }
     removeDirection(dir) {
         switch (dir) {
             case Direction.Up:
-                if (this.direction == Direction.UpLeft) {
-                    this.direction = Direction.Left;
-                }
-                else if (this.direction == Direction.UpRight) {
-                    this.direction = Direction.Right;
-                }
-                else {
-                    this.direction = Direction.Idle;
-                }
+                this.upPressed = false;
                 break;
             case Direction.Down:
-                if (this.direction == Direction.DownLeft) {
-                    this.direction = Direction.Left;
-                }
-                else if (this.direction == Direction.DownRight) {
-                    this.direction = Direction.Right;
-                }
-                else {
-                    this.direction = Direction.Idle;
-                }
+                this.downPressed = false;
                 break;
             case Direction.Left:
-                if (this.direction == Direction.DownLeft) {
-                    this.direction = Direction.Down;
-                }
-                else if (this.direction == Direction.UpLeft) {
-                    this.direction = Direction.Up;
-                }
-                else {
-                    this.direction = Direction.Idle;
-                }
+                this.leftPressed = false;
                 break;
             case Direction.Right:
-                if (this.direction == Direction.DownRight) {
-                    this.direction = Direction.Down;
-                }
-                else if (this.direction == Direction.UpLeft) {
-                    this.direction = Direction.Up;
-                }
-                else {
-                    this.direction = Direction.Idle;
-                }
+                this.rightPressed = false;
                 break;
         }
     }
     update(dt, gremlins) {
         const owner = getGremlinFromID(this.ownerID, gremlins);
         const ownerName = owner.getName();
+        //(3/15/22) determine gremlin direction
+        if (this.upPressed) {
+            if (this.leftPressed) {
+                this.direction = Direction.UpLeft;
+            }
+            else if (this.rightPressed) {
+                this.direction = Direction.UpRight;
+            }
+            else {
+                this.direction = Direction.Up;
+            }
+        }
+        else if (this.downPressed) {
+            if (this.leftPressed) {
+                this.direction = Direction.DownLeft;
+            }
+            else if (this.rightPressed) {
+                this.direction = Direction.DownRight;
+            }
+            else {
+                this.direction = Direction.Down;
+            }
+        }
+        else if (this.leftPressed) {
+            this.direction = Direction.Left;
+        }
+        else if (this.rightPressed) {
+            this.direction = Direction.Right;
+        }
+        else {
+            this.direction = Direction.Idle;
+        }
+        console.log(Direction[this.direction]);
         switch (this.direction) {
             case Direction.Up:
                 owner.pos.offsetY(-.15 * dt);
@@ -129,6 +102,8 @@ export default class MovementState extends GremlinState {
                 break;
             case Direction.Right:
                 owner.pos.offsetX(.11 * dt);
+                break;
+            case Direction.Idle:
                 break;
         }
     }
