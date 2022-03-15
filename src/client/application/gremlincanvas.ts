@@ -12,7 +12,7 @@ export default class GremlinCanvas {
     constructor() {
         console.log('GremlinCanvas constructor');
 
-       
+
         this.fpsIndicator = '';
         this.timeFpsIndicatorLastUpdated = performance.now();
 
@@ -20,20 +20,24 @@ export default class GremlinCanvas {
     }
 
     public initCanvas(): void {
-        this.canvas = <HTMLCanvasElement>document.getElementById('gremlin-canvas'); 
+        this.canvas = <HTMLCanvasElement>document.getElementById('gremlin-canvas');
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext('2d');
     }
 
     public syncPlayers(gremlins: Array<gcGremlin>) {
         this.fellowGremlins = gremlins;
     }
- 
+
     public update(dt: number): void {
         if (performance.now() - this.timeFpsIndicatorLastUpdated > 250) {
-            this.fpsIndicator = 'fps:' + Math.floor(((1/dt) * 1000));
+            this.fpsIndicator = 'fps:' + Math.floor(((1 / dt) * 1000));
             this.timeFpsIndicatorLastUpdated = performance.now();
         }
 
+        // Paul (03.15.22)
+        this.fellowGremlins.forEach(gremlin => {
+            gremlin.update(dt);
+        });
     }
 
     public render(): void {
@@ -43,7 +47,7 @@ export default class GremlinCanvas {
         this.ctx.fillStyle = 'black';
         this.ctx.fillText(this.fpsIndicator, 5, 20);
 
-        this.fellowGremlins.forEach( gremlin => {
+        this.fellowGremlins.forEach(gremlin => {
             this.ctx.drawImage(gremlin.sprite, gremlin.pos.x, gremlin.pos.y);
             //nameLength is required to be able to center the gremlin's name above their head
             const nameLength: number = this.ctx.measureText(gremlin.username).width;

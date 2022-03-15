@@ -11,7 +11,7 @@ export default class GremlinClient {
     private socket: io;
     private gremlinID: string;
     private gremlinUserName: string;
-    private fellowGremlins: Array<gcGremlin>;
+    private fellowGremlins: Map<string, gcGremlin>;
     private isPlaying: boolean;
 
     private dt: number;
@@ -27,7 +27,7 @@ export default class GremlinClient {
         this.socket = io();
         this.gremlinID = 'not-assigned';
         this.gremlinUserName = 'none';
-        this.fellowGremlins = new Array();
+        this.fellowGremlins = new Map();
 
         this.gCanvas = new GremlinCanvas();
 
@@ -39,12 +39,12 @@ export default class GremlinClient {
         this.socket.on('connect', () => {
             this.gremlinID = this.socket.id;
             this.shoutID();
-            
+
             //(3/12/22) socket callbacks
             //each function corresponds to its own socket.io message 
             this.gsWelcome();
             this.gsGremlinPackage();
-            
+
         });
 
         document.onkeyup = this.handleKeyUp.bind(this);
@@ -53,7 +53,7 @@ export default class GremlinClient {
     }
 
 
-    public receiveIDFromUser(name: string ) {
+    public receiveIDFromUser(name: string) {
         this.gremlinUserName = name;
         this.isPlaying = true;
         this.gCanvas.initCanvas();
@@ -78,10 +78,21 @@ export default class GremlinClient {
         this.socket.on('gsGremlinPackage', (serverPackage: any) => {
             if (this.isPlaying) {
                 //(3/13/22) reset the fellowGremlins array and repopulate it from the GremlinPackage
-                this.fellowGremlins.length = 0;
+                //   this.fellowGremlins.length = 0;
                 for (let i = 0; i < serverPackage[0].connectedGremlins.length; i++) {
                     const currentGremlin = serverPackage[0].connectedGremlins[i];
-                    this.fellowGremlins.push(new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));                
+
+                    // Paul - (03.15.22)
+                    // instead of resetting list I rely on a map to update already existing gremlins
+                    // currently doesn't remove gremlins if they're not part of the serverPackage 
+                    // maybe a seperate socket event for disconnects to avoid copying the map over ?
+                    //      or make a temp map that reassign this.fellowGremlins with new gcGremlin objects after seeing what exists 
+                    const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
+                    existingGremlin ? existingGremlin.targetPos = currentGremlin.pos
+                        : this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos))
+
+
+                    //   this.fellowGremlins.push(new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));                
                 }
 
                 //(3/13/22) logging once every 25 update packages sounds reasonable, don't want to flood the console
@@ -131,11 +142,11 @@ export default class GremlinClient {
                 case 'KeyS':
                     const startMoveDownCommand: gcCommand = new gcCommand(this.socket.id, 'gcStartMoveDownCommand');
                     this.socket.emit('gcStateChangeCommand', startMoveDownCommand);
-                    break;    
+                    break;
                 case 'KeyD':
                     const startMoveRightCommand: gcCommand = new gcCommand(this.socket.id, 'gcStartMoveRightCommand');
                     this.socket.emit('gcStateChangeCommand', startMoveRightCommand);
-                    break;    
+                    break;
             }
         }
 
@@ -155,19 +166,21 @@ export default class GremlinClient {
                 case 'KeyS':
                     const stopMoveDownCommand: gcCommand = new gcCommand(this.socket.id, 'gcStopMoveDownCommand');
                     this.socket.emit('gcStateChangeCommand', stopMoveDownCommand);
-                    break; 
+                    break;
                 case 'KeyD':
                     const stopMoveRightCommand: gcCommand = new gcCommand(this.socket.id, 'gcStopMoveRightCommand');
                     this.socket.emit('gcStateChangeCommand', stopMoveRightCommand);
-                    break;        
+                    break;
             }
         }
     }
 
     private update(dt: number): void {
-        this.gCanvas.syncPlayers(this.fellowGremlins);
+        // Paul - (03.15.22)
+        // cast to array from the map - this probably isn't necessary 
+        this.gCanvas.syncPlayers(Array.from(this.fellowGremlins.values()));
         this.gCanvas.update(dt);
-        
+
     }
 
     private render(): void {
