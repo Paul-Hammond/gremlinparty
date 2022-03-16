@@ -28,6 +28,6 @@ export default class gcGremlin {
     // Paul - (03.15.22)
     public update(dt: number): void {
         // lerp position to target position by delta time divded by the server tick rate of 100ms 
-        this.pos = new Vec2(lerp(this.pos.x, this.targetPos.x, (dt) / 100 % 1), lerp(this.pos.y, this.targetPos.y, (dt) / 100 % 1));
+        this.pos = new Vec2(lerp(this.pos.x, this.targetPos.x, (dt) / 50), lerp(this.pos.y, this.targetPos.y, (dt) / 50));
     }
 }

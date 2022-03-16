@@ -7,6 +7,8 @@ export default class MovementState extends GremlinState {
     private leftPressed;
     private rightPressed;
     private direction;
+    private speed;
+    private diagonalSpeed;
     constructor(ownerID: string);
     addDirection(dir: Direction): void;
     removeDirection(dir: Direction): void;

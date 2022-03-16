@@ -5,7 +5,6 @@ import gcGremlin from '../player/gcgremlin.js';
 import GremlinCanvas from './gremlincanvas.js';
 
 import gcCommand from '../player/commands/gcCommand.js';
-import e from 'express';
 
 export default class GremlinClient {
     private socket: io;
@@ -43,8 +42,9 @@ export default class GremlinClient {
             //(3/12/22) socket callbacks
             //each function corresponds to its own socket.io message 
             this.gsWelcome();
+            this.gsFallenGremlin();
             this.gsGremlinPackage();
-
+            
         });
 
         document.onkeyup = this.handleKeyUp.bind(this);
@@ -73,12 +73,20 @@ export default class GremlinClient {
         });
     }
 
+    private gsFallenGremlin() {
+        this.socket.on('gsFallenGremlin', (id: string) => {
+            const gremlin = this.fellowGremlins.get(id);
+            if (gremlin) {
+                this.fellowGremlins.delete(id);
+            }
+        });
+    }
+
     private gsGremlinPackage() {
 
         this.socket.on('gsGremlinPackage', (serverPackage: any) => {
             if (this.isPlaying) {
                 //(3/13/22) reset the fellowGremlins array and repopulate it from the GremlinPackage
-                //   this.fellowGremlins.length = 0;
                 for (let i = 0; i < serverPackage[0].connectedGremlins.length; i++) {
                     const currentGremlin = serverPackage[0].connectedGremlins[i];
 
@@ -88,15 +96,16 @@ export default class GremlinClient {
                     // maybe a seperate socket event for disconnects to avoid copying the map over ?
                     //      or make a temp map that reassign this.fellowGremlins with new gcGremlin objects after seeing what exists 
                     const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
-                    existingGremlin ? existingGremlin.targetPos = currentGremlin.pos
-                        : this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos))
-
-
-                    //   this.fellowGremlins.push(new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));                
+                    if (existingGremlin) {
+                        existingGremlin.targetPos = currentGremlin.pos
+                    }
+                    else {
+                        this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
+                    }
                 }
 
-                //(3/13/22) logging once every 25 update packages sounds reasonable, don't want to flood the console
-                if (serverPackage[1] % 25 == 0) {
+                //(3/13/22) logging once every 50 update packages sounds reasonable, don't want to flood the console
+                if (serverPackage[1] % 50 == 0) {
                     console.log(`GremlinPackage count: ${serverPackage[1]}`);
                 }
             }

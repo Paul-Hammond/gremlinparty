@@ -22,6 +22,7 @@ class GremlinServer {
         this.io = new socketIO.Server(this.server);
         this.connectedGremlins = new Array();
         this.gremlinWorld = new GremlinWorld();
+        this.tickRateMs = 50;
     }
     start() {
         this.server.listen(this.port);
@@ -43,6 +44,7 @@ class GremlinServer {
                 }
                 else {
                     this.connectedGremlins.splice(getIndexFromGremlin(fallenGremlin, this.connectedGremlins), 1);
+                    this.io.emit('gsFallenGremlin', socket.id);
                 }
                 const playerCount = getPlayingGremlins(this.connectedGremlins).length;
                 console.log(`--- ${fallenGremlin.gremlinID} disconnected. ${this.connectedGremlins.length} online and ${playerCount} playing`);
@@ -59,16 +61,16 @@ class GremlinServer {
                 //(3/12/22) create what boils down to a world update tick
                 const players = getPlayingGremlins(this.connectedGremlins);
                 this.gremlinWorld.syncGremlins(players);
-                this.gremlinWorld.update(100);
+                this.gremlinWorld.update(this.tickRateMs);
                 const currentPackage = this.gremlinWorld.createGremlinWorldPackage();
                 //(3/12/22) this console.log isn't needed, but is nice to have the server periodically report
                 //how many GremlinPackages it has sent
-                if (currentPackage[1] % 100 == 0 && currentPackage[1] > 0) {
+                if (currentPackage[1] % 200 == 0 && currentPackage[1] > 0) {
                     console.log(`GremlinPackage count: ${currentPackage[1]}, ${this.connectedGremlins.length} online and ${players.length} playing`);
                 }
                 this.io.emit('gsGremlinPackage', currentPackage);
             }
-        }, 100);
+        }, this.tickRateMs);
     }
 }
 const gs = new GremlinServer(29070);
