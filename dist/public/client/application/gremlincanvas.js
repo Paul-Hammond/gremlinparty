@@ -17,6 +17,10 @@ export default class GremlinCanvas {
             this.fpsIndicator = 'fps:' + Math.floor(((1 / dt) * 1000));
             this.timeFpsIndicatorLastUpdated = performance.now();
         }
+        // Paul (03.15.22)
+        this.fellowGremlins.forEach(gremlin => {
+            gremlin.update(dt);
+        });
     }
     render() {
         this.ctx.fillStyle = `rgb(140, 140, 140)`;

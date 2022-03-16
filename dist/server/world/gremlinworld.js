@@ -1,5 +1,7 @@
 import { getGremlinFromID } from '../player/gremlin.js';
 import GremlinPackage from './gremlinpackage.js';
+// Paul - (03.15.22) - was getting import errors from performance
+import { performance } from 'perf_hooks';
 export default class GremlinWorld {
     constructor() {
         console.log('calling gremlinWorld constructor');

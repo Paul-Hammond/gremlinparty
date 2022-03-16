@@ -1,24 +1,27 @@
 import Gremlin, { getGremlinFromID } from '../player/gremlin.js';
 import GremlinPackage from './gremlinpackage.js';
 
+// Paul - (03.15.22) - was getting import errors from performance
+import { performance } from 'perf_hooks';
+
 export default class GremlinWorld {
     private dt: number;
     private timeOfLastUpdate: number;
     private gameGremlins: Array<Gremlin>;
     private packageCount: number;
-    
+
     constructor() {
         console.log('calling gremlinWorld constructor');
         this.gameGremlins = new Array();
         this.packageCount = 0;
-    
+
 
         this.dt = 0;
         this.timeOfLastUpdate = performance.now();
     }
 
     public update(dt: number): void {
-        this.gameGremlins.forEach( gremlin => {
+        this.gameGremlins.forEach(gremlin => {
             gremlin.update(dt, this.gameGremlins);
         });
     }
@@ -27,7 +30,7 @@ export default class GremlinWorld {
         const gremlin = getGremlinFromID(id, this.gameGremlins);
         if (gremlin) {
             gremlin.receivegcCommand(gcStateChangeCommand);
-            
+
         }
     }
 

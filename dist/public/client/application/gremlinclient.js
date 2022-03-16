@@ -11,7 +11,7 @@ export default class GremlinClient {
         this.socket = io();
         this.gremlinID = 'not-assigned';
         this.gremlinUserName = 'none';
-        this.fellowGremlins = new Array();
+        this.fellowGremlins = new Map();
         this.gCanvas = new GremlinCanvas();
         this.dt = 0;
         this.timeOfLastUpdate = 0;
@@ -48,10 +48,18 @@ export default class GremlinClient {
         this.socket.on('gsGremlinPackage', (serverPackage) => {
             if (this.isPlaying) {
                 //(3/13/22) reset the fellowGremlins array and repopulate it from the GremlinPackage
-                this.fellowGremlins.length = 0;
+                //   this.fellowGremlins.length = 0;
                 for (let i = 0; i < serverPackage[0].connectedGremlins.length; i++) {
                     const currentGremlin = serverPackage[0].connectedGremlins[i];
-                    this.fellowGremlins.push(new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
+                    // Paul - (03.15.22)
+                    // instead of resetting list I rely on a map to update already existing gremlins
+                    // currently doesn't remove gremlins if they're not part of the serverPackage 
+                    // maybe a seperate socket event for disconnects to avoid copying the map over ?
+                    //      or make a temp map that reassign this.fellowGremlins with new gcGremlin objects after seeing what exists 
+                    const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
+                    existingGremlin ? existingGremlin.targetPos = currentGremlin.pos
+                        : this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
+                    //   this.fellowGremlins.push(new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));                
                 }
                 //(3/13/22) logging once every 25 update packages sounds reasonable, don't want to flood the console
                 if (serverPackage[1] % 25 == 0) {
@@ -123,7 +131,9 @@ export default class GremlinClient {
         }
     }
     update(dt) {
-        this.gCanvas.syncPlayers(this.fellowGremlins);
+        // Paul - (03.15.22)
+        // cast to array from the map - this probably isn't necessary 
+        this.gCanvas.syncPlayers(Array.from(this.fellowGremlins.values()));
         this.gCanvas.update(dt);
     }
     render() {
