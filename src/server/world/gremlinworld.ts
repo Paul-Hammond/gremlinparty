@@ -3,7 +3,6 @@ import GremlinPackage from './gremlinpackage.js';
 
 // Paul - (03.15.22) - was getting import errors from performance
 import { performance } from 'perf_hooks';
-import CollisionDetector from '../math/collisiondetection.js';
 import Vec2 from '../math/vec2.js';
 
 export default class GremlinWorld {
@@ -39,15 +38,22 @@ export default class GremlinWorld {
 
     }
 
-    public dispatchCommandToID(id: string, gcStateChangeCommand: any) {
+    public dispatchCommandToID(id: string, gcCommand: any): void {
         const gremlin = getGremlinFromID(id, this.gameGremlins);
         if (gremlin) {
-            gremlin.receivegcCommand(gcStateChangeCommand);
+            gremlin.receivegcCommand(gcCommand);
 
         }
     }
 
-    public syncGremlins(gremlinPlayers: Array<Gremlin>) {
+    public dispatchMouseUpdateToID(id: string, mousePos: Vec2): void {
+        const gremlin = getGremlinFromID(id, this.gameGremlins);
+        if (gremlin) {
+            gremlin.receiveAimingPos(mousePos);
+        }
+    }
+
+    public syncGremlins(gremlinPlayers: Array<Gremlin>): void {
         this.gameGremlins = gremlinPlayers;
     }
 

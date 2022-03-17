@@ -9,6 +9,7 @@ export default class GremlinClient {
     private timeOfLastUpdate;
     private gCanvas;
     private mousePos;
+    private timeOfLastMouseEmit;
     constructor();
     start(): void;
     receiveIDFromUser(name: string): void;

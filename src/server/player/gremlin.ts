@@ -7,6 +7,11 @@ export default class Gremlin {
     readonly gremlinID: string;
     private name: string = 'UnnamedGremlin';
     public pos: Vec2;
+
+    //(3/17/22) this Vec2 is a good estimate of what the gremlin user is pointing at, but is up to four
+    //server ticks (200ms) out of date (this frequency of updating is determined in GremlinClient)
+    public aimingPosLatest: Vec2;
+
     private state: MovementState;
 
     
@@ -19,6 +24,7 @@ export default class Gremlin {
     constructor(id: string, startingPos: Vec2) {
         this.gremlinID = id;
         this.pos = startingPos;
+        this.aimingPosLatest = new Vec2(50, 50);
         this.state = new MovementState(id);
     }
 
@@ -54,6 +60,10 @@ export default class Gremlin {
                 this.state.removeDirection(Direction.Right);
                 break;
         }
+    }
+
+    public receiveAimingPos(pos: Vec2): void {
+        this.aimingPosLatest = pos;
     }
 
     public update(dt: number, gremlins: Array<Gremlin>): void {

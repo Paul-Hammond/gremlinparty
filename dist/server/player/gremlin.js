@@ -1,3 +1,4 @@
+import Vec2 from '../math/vec2.js';
 import MovementState, { Direction } from './state/movementstate.js';
 export default class Gremlin {
     constructor(id, startingPos) {
@@ -7,6 +8,7 @@ export default class Gremlin {
         this.isPlaying = false;
         this.gremlinID = id;
         this.pos = startingPos;
+        this.aimingPosLatest = new Vec2(50, 50);
         this.state = new MovementState(id);
     }
     startPlaying(name) {
@@ -40,6 +42,9 @@ export default class Gremlin {
                 this.state.removeDirection(Direction.Right);
                 break;
         }
+    }
+    receiveAimingPos(pos) {
+        this.aimingPosLatest = pos;
     }
     update(dt, gremlins) {
         this.state.update(dt, gremlins);

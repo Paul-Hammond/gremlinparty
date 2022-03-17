@@ -53,6 +53,9 @@ class GremlinServer {
             socket.on('gcStateChangeCommand', (gcStateChangeCommand) => {
                 this.gremlinWorld.dispatchCommandToID(socket.id, gcStateChangeCommand);
             });
+            socket.on('gcMouseUpdateCommand', (mouseUpdate) => {
+                this.gremlinWorld.dispatchMouseUpdateToID(socket.id, mouseUpdate);
+            });
         });
         //(3/12/22) effectively the GremlinServer update function. emits the gsGremlinPackage message
         //x times a second to all connected clients 
