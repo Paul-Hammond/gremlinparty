@@ -110,7 +110,7 @@ export default class MovementState extends GremlinState {
         // Paul - (03.16.22) 
         // refactored movement into seperate functions
         // added a rough collision detection against other objects
-        //      collides with other gremlins right now
+        // collides with other gremlins right now
         let pos: Vec2 = new Vec2(owner.pos.x, owner.pos.y);
         switch (this.direction) {
             case Direction.Up:

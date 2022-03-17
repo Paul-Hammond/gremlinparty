@@ -3,11 +3,13 @@ export default class Gremlin {
     readonly gremlinID: string;
     private name;
     pos: Vec2;
+    aimingPosLatest: Vec2;
     private state;
     isPlaying: boolean;
     constructor(id: string, startingPos: Vec2);
     startPlaying(name: string): void;
     receivegcCommand(gcCommand: any): void;
+    receiveAimingPos(pos: Vec2): void;
     update(dt: number, gremlins: Array<Gremlin>): void;
     getName(): string;
 }

@@ -22,10 +22,16 @@ export default class GremlinWorld {
         //     });
         // });
     }
-    dispatchCommandToID(id, gcStateChangeCommand) {
+    dispatchCommandToID(id, gcCommand) {
         const gremlin = getGremlinFromID(id, this.gameGremlins);
         if (gremlin) {
-            gremlin.receivegcCommand(gcStateChangeCommand);
+            gremlin.receivegcCommand(gcCommand);
+        }
+    }
+    dispatchMouseUpdateToID(id, mousePos) {
+        const gremlin = getGremlinFromID(id, this.gameGremlins);
+        if (gremlin) {
+            gremlin.receiveAimingPos(mousePos);
         }
     }
     syncGremlins(gremlinPlayers) {

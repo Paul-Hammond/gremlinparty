@@ -20,6 +20,7 @@ export default class GremlinClient {
     private gCanvas: GremlinCanvas;
 
     private mousePos: Vec2;
+    private timeOfLastMouseEmit: number;
 
     constructor() {
         console.log('henlo this is the client speaking');
@@ -34,6 +35,7 @@ export default class GremlinClient {
         this.dt = 0;
         this.timeOfLastUpdate = 0;
         this.mousePos = new Vec2(0, 0);
+        this.timeOfLastMouseEmit = 0;
     }
 
     public start() {
@@ -85,22 +87,22 @@ export default class GremlinClient {
     }
 
     private gsGremlinPackage() {
-
         this.socket.on('gsGremlinPackage', (serverPackage: any) => {
             if (this.isPlaying) {
                 for (let i = 0; i < serverPackage[0].connectedGremlins.length; i++) {
+                    //(3/17/22) currentGremlin is a blob of data with all of the attributes of a Gremlin (server, not gc)
                     const currentGremlin = serverPackage[0].connectedGremlins[i];
                     // Paul - (03.16.22)
                     // catch player gremlin from being added yet
                     if (currentGremlin.gremlinID == this.gremlinID) {
                         this.selfGremlin = currentGremlin;
                     }
-                    // Paul - (03.15.22)
-                    // reassign existing gremlins and add new gremlins to map
                     else {
                         const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
                         if (existingGremlin) {
+                            //(3/17/22) existing gremlin is found and not the player 
                             existingGremlin.targetPos = currentGremlin.pos;
+                            existingGremlin.updateAimingPos(currentGremlin.aimingPosLatest);
                         }
                         else {
                             this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
@@ -109,15 +111,12 @@ export default class GremlinClient {
                 }
 
 
-                const existingGremlin = this.fellowGremlins.get(this.selfGremlin.gremlinID);
+                //(3/17/22) player loading, probably want this in its own function eventually
+                const existingGremlin = this.fellowGremlins.get(this.gremlinID);
                 if (existingGremlin) {
-                    this.fellowGremlins.delete(this.selfGremlin.gremlinID);
-                    const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, existingGremlin.pos);
-                    newGremlin.targetPos = this.selfGremlin.pos;
-                    newGremlin.updateAimingPos(existingGremlin.aimingPos);
-
-                    this.fellowGremlins.set(this.selfGremlin.gremlinID, newGremlin);
-                    this.selfGremlin = newGremlin;
+                    existingGremlin.targetPos = this.selfGremlin.pos;
+                    this.fellowGremlins.set(this.gremlinID, existingGremlin);
+                    this.selfGremlin = existingGremlin;
                 }
                 else {
                     const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, this.selfGremlin.pos);
@@ -205,6 +204,13 @@ export default class GremlinClient {
     }
 
     private update(dt: number): void {
+
+        if (performance.now() - this.timeOfLastMouseEmit > 200) {
+            //(3/17/22) right here is where a gcCommand WOULD go, but the mouseUpdate is so trivial (it's just a Vec2)
+            //that it's not worth creating a whole new class derived from gcCommand for it
+            this.socket.emit('gcMouseUpdateCommand', this.mousePos);
+            this.timeOfLastMouseEmit = performance.now();
+        }
         // Paul - (03.15.22)
         // cast to array from the map - this probably isn't necessary 
         this.gCanvas.syncPlayers(Array.from(this.fellowGremlins.values()));
@@ -213,6 +219,8 @@ export default class GremlinClient {
     }
 
     private render(): void {
-        this.gCanvas.render();
+        if (this.selfGremlin) {
+            this.gCanvas.render(this.selfGremlin);
+        }
     }
 }
