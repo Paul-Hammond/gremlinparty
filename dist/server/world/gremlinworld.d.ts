@@ -2,8 +2,6 @@ import Gremlin from '../player/gremlin.js';
 import GremlinPackage from './gremlinpackage.js';
 import Vec2 from '../math/vec2.js';
 export default class GremlinWorld {
-    private dt;
-    private timeOfLastUpdate;
     private gameGremlins;
     private packageCount;
     constructor();

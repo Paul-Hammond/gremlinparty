@@ -9,7 +9,6 @@ export default class gcGremlin {
     private centerPos: Vec2;
 
     public aimingPos: Vec2;
-    //readonly isPlayer: boolean;
 
     //(3/13/22) client specific
     private sprite: HTMLImageElement;

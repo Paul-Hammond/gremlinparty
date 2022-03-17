@@ -1,6 +1,5 @@
 import Vec2 from '../math/vec2.js';
 
-import GremlinState from './state/gremlinstate.js';
 import MovementState, { Direction } from './state/movementstate.js';
 
 export default class Gremlin {
@@ -8,8 +7,8 @@ export default class Gremlin {
     private name: string = 'UnnamedGremlin';
     public pos: Vec2;
 
-    //(3/17/22) this Vec2 is a good estimate of what the gremlin user is pointing at, but is up to four
-    //server ticks (200ms) out of date (this frequency of updating is determined in GremlinClient)
+    //(3/17/22) this Vec2 is a good estimate of what the gremlin user is pointing at, but is up to one
+    //full server tick (50ms) out of date
     public aimingPosLatest: Vec2;
 
     private state: MovementState;

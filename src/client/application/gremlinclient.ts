@@ -205,7 +205,7 @@ export default class GremlinClient {
 
     private update(dt: number): void {
 
-        if (performance.now() - this.timeOfLastMouseEmit > 200) {
+        if (performance.now() - this.timeOfLastMouseEmit > 50) {
             //(3/17/22) right here is where a gcCommand WOULD go, but the mouseUpdate is so trivial (it's just a Vec2)
             //that it's not worth creating a whole new class derived from gcCommand for it
             this.socket.emit('gcMouseUpdateCommand', this.mousePos);

@@ -6,8 +6,6 @@ import { performance } from 'perf_hooks';
 import Vec2 from '../math/vec2.js';
 
 export default class GremlinWorld {
-    private dt: number;
-    private timeOfLastUpdate: number;
     private gameGremlins: Array<Gremlin>;
     private packageCount: number;
 
@@ -15,27 +13,12 @@ export default class GremlinWorld {
         console.log('calling gremlinWorld constructor');
         this.gameGremlins = new Array();
         this.packageCount = 0;
-
-
-        this.dt = 0;
-        this.timeOfLastUpdate = performance.now();
     }
 
     public update(dt: number): void {
         this.gameGremlins.forEach(gremlin => {
             gremlin.update(dt, this.gameGremlins);
         });
-        // this.gameGremlins.forEach(gremlin => {
-        //     this.gameGremlins.forEach(g => {
-        //         if (g.gremlinID != gremlin.gremlinID && CollisionDetector.axisAlignedBoundBox(g.pos, new Vec2(72, 72), gremlin.pos, new Vec2(72, 72))) {
-
-        //         } else {
-
-        //         }
-        //     });
-
-        // });
-
     }
 
     public dispatchCommandToID(id: string, gcCommand: any): void {
@@ -70,9 +53,4 @@ export default class GremlinWorld {
 
         return [currentGremlinPackage, this.packageCount];
     }
-
-    //(3/11/22) create a heartbeat function that emits a GremlinWorldPackage every 1/3rd second
-    //heartbeat function will act as update. first step is to read the queue of GremlinMessages
-    //and change state according to those. Then, let everything else act according to its own state
-    //with the passage of time
 }
