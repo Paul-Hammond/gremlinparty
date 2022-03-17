@@ -14,6 +14,13 @@ export default class GremlinWorld {
         this.gameGremlins.forEach(gremlin => {
             gremlin.update(dt, this.gameGremlins);
         });
+        // this.gameGremlins.forEach(gremlin => {
+        //     this.gameGremlins.forEach(g => {
+        //         if (g.gremlinID != gremlin.gremlinID && CollisionDetector.axisAlignedBoundBox(g.pos, new Vec2(72, 72), gremlin.pos, new Vec2(72, 72))) {
+        //         } else {
+        //         }
+        //     });
+        // });
     }
     dispatchCommandToID(id, gcStateChangeCommand) {
         const gremlin = getGremlinFromID(id, this.gameGremlins);

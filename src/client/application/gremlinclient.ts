@@ -45,7 +45,7 @@ export default class GremlinClient {
             this.gsWelcome();
             this.gsFallenGremlin();
             this.gsGremlinPackage();
-            
+
         });
 
         //(3/16/22) input callbacks
@@ -88,21 +88,39 @@ export default class GremlinClient {
 
         this.socket.on('gsGremlinPackage', (serverPackage: any) => {
             if (this.isPlaying) {
+                var clientGremlin = null;
                 //(3/13/22) reset the fellowGremlins array and repopulate it from the GremlinPackage
                 for (let i = 0; i < serverPackage[0].connectedGremlins.length; i++) {
                     const currentGremlin = serverPackage[0].connectedGremlins[i];
+                    // Paul - (03.16.22)
+                    // catch player gremlin from being added yet
+                    if (currentGremlin.gremlinID == this.gremlinID) {
+                        clientGremlin = currentGremlin;
+                    } else {
+                        // Paul - (03.15.22)
+                        // reassign existing gremlins and add new gremlins to map
+                        const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
+                        if (existingGremlin) {
+                            existingGremlin.targetPos = currentGremlin.pos
+                        }
+                        else {
+                            this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
+                        }
+                    }
+                }
 
-                    // Paul - (03.15.22)
-                    // instead of resetting list I rely on a map to update already existing gremlins
-                    // currently doesn't remove gremlins if they're not part of the serverPackage 
-                    // maybe a seperate socket event for disconnects to avoid copying the map over ?
-                    //      or make a temp map that reassign this.fellowGremlins with new gcGremlin objects after seeing what exists 
-                    const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
+                // Paul - (03.16.22)
+                // add gremlin to the bottom of the map (when casting to array the map values will be reversed)
+                if (clientGremlin) {
+                    const existingGremlin = this.fellowGremlins.get(clientGremlin.gremlinID);
                     if (existingGremlin) {
-                        existingGremlin.targetPos = currentGremlin.pos
+                        this.fellowGremlins.delete(clientGremlin.gremlinID);
+                        const newGremlin = new gcGremlin(clientGremlin.gremlinID, clientGremlin.name, existingGremlin.pos);
+                        newGremlin.targetPos = clientGremlin.pos;
+                        this.fellowGremlins.set(clientGremlin.gremlinID, newGremlin);
                     }
                     else {
-                        this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
+                        this.fellowGremlins.set(clientGremlin.gremlinID, new gcGremlin(clientGremlin.gremlinID, clientGremlin.name, clientGremlin.pos));
                     }
 
                     //(3/16/22) this sets selfGremlin every GremlinPackage, probably overkill but oh well
@@ -120,7 +138,6 @@ export default class GremlinClient {
     }
 
     //end of socket callbacks
-
 
     private loop(): void {
         if (this.isPlaying) {
