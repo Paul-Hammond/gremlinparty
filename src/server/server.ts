@@ -60,7 +60,7 @@ class GremlinServer {
                 const newGrem: Gremlin = getGremlinFromID(socket.id, this.connectedGremlins)!;
                 newGrem.startPlaying(name);
                 console.log(`${newGrem.getName()} started playing. ${this.connectedGremlins.length} online and ${getPlayingGremlins(this.connectedGremlins).length} playing`);
-                this.io.to(socket.id).emit('gsWelcome', this.connectedGremlins.length);
+                this.io.to(socket.id).emit('gsWelcome', newGrem.pos);
             });
 
 

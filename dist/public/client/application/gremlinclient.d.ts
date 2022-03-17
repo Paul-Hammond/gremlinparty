@@ -3,6 +3,7 @@ export default class GremlinClient {
     private gremlinID;
     private gremlinUserName;
     private selfGremlin;
+    private selfStartingPos;
     private fellowGremlins;
     private isPlaying;
     private dt;
