@@ -3,7 +3,7 @@ import { lerp } from '../math/lerp.js';
 
 export default class gcGremlin {
     readonly gremlinID: string;
-    readonly username: string;
+    readonly name: string;
     public pos: Vec2;
     public targetPos: Vec2;
     private centerPos: Vec2;
@@ -16,7 +16,7 @@ export default class gcGremlin {
 
     constructor(id: string, name: string, startingPos: Vec2) {
         this.gremlinID = id;
-        this.username = name;
+        this.name = name;
         this.pos = startingPos;
         this.targetPos = startingPos;
         this.centerPos = startingPos;
@@ -45,8 +45,8 @@ export default class gcGremlin {
     public render(ctx: CanvasRenderingContext2D): void {
         ctx.drawImage(this.sprite, this.pos.x, this.pos.y);
         //(3/16/22) nameLength is required to be able to center the gremlin's name above their head
-        const nameLength: number = ctx.measureText(this.username).width; 
-        ctx.fillText(this.username, this.pos.x + (this.sprite.width / 2) - (nameLength / 2), this.pos.y - 25);
+        const nameLength: number = ctx.measureText(this.name).width; 
+        ctx.fillText(this.name, this.pos.x + (this.sprite.width / 2) - (nameLength / 2), this.pos.y - 25);
 
         ctx.beginPath();
         ctx.lineWidth = 2;

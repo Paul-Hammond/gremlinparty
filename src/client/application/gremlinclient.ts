@@ -88,20 +88,19 @@ export default class GremlinClient {
 
         this.socket.on('gsGremlinPackage', (serverPackage: any) => {
             if (this.isPlaying) {
-                var clientGremlin = null;
-                //(3/13/22) reset the fellowGremlins array and repopulate it from the GremlinPackage
                 for (let i = 0; i < serverPackage[0].connectedGremlins.length; i++) {
                     const currentGremlin = serverPackage[0].connectedGremlins[i];
                     // Paul - (03.16.22)
                     // catch player gremlin from being added yet
                     if (currentGremlin.gremlinID == this.gremlinID) {
-                        clientGremlin = currentGremlin;
-                    } else {
-                        // Paul - (03.15.22)
-                        // reassign existing gremlins and add new gremlins to map
+                        this.selfGremlin = currentGremlin;
+                    }
+                    // Paul - (03.15.22)
+                    // reassign existing gremlins and add new gremlins to map
+                    else {
                         const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
                         if (existingGremlin) {
-                            existingGremlin.targetPos = currentGremlin.pos
+                            existingGremlin.targetPos = currentGremlin.pos;
                         }
                         else {
                             this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
@@ -109,24 +108,21 @@ export default class GremlinClient {
                     }
                 }
 
-                // Paul - (03.16.22)
-                // add gremlin to the bottom of the map (when casting to array the map values will be reversed)
-                if (clientGremlin) {
-                    const existingGremlin = this.fellowGremlins.get(clientGremlin.gremlinID);
-                    if (existingGremlin) {
-                        this.fellowGremlins.delete(clientGremlin.gremlinID);
-                        const newGremlin = new gcGremlin(clientGremlin.gremlinID, clientGremlin.name, existingGremlin.pos);
-                        newGremlin.targetPos = clientGremlin.pos;
-                        this.fellowGremlins.set(clientGremlin.gremlinID, newGremlin);
-                    }
-                    else {
-                        this.fellowGremlins.set(clientGremlin.gremlinID, new gcGremlin(clientGremlin.gremlinID, clientGremlin.name, clientGremlin.pos));
-                    }
 
-                    //(3/16/22) this sets selfGremlin every GremlinPackage, probably overkill but oh well
-                    if (existingGremlin?.gremlinID == this.gremlinID) {
-                        this.selfGremlin = existingGremlin;
-                    }
+                const existingGremlin = this.fellowGremlins.get(this.selfGremlin.gremlinID);
+                if (existingGremlin) {
+                    this.fellowGremlins.delete(this.selfGremlin.gremlinID);
+                    const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, existingGremlin.pos);
+                    newGremlin.targetPos = this.selfGremlin.pos;
+                    newGremlin.updateAimingPos(existingGremlin.aimingPos);
+
+                    this.fellowGremlins.set(this.selfGremlin.gremlinID, newGremlin);
+                    this.selfGremlin = newGremlin;
+                }
+                else {
+                    const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, this.selfGremlin.pos);
+                    this.fellowGremlins.set(this.selfGremlin.gremlinID, newGremlin);
+                    this.selfGremlin = newGremlin;
                 }
 
                 //(3/13/22) logging once every 50 update packages sounds reasonable, don't want to flood the console

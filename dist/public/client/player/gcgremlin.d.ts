@@ -1,7 +1,7 @@
 import Vec2 from '../math/gcVec2.js';
 export default class gcGremlin {
     readonly gremlinID: string;
-    readonly username: string;
+    readonly name: string;
     pos: Vec2;
     targetPos: Vec2;
     private centerPos;
