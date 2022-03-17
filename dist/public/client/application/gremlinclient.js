@@ -177,7 +177,7 @@ export default class GremlinClient {
         this.gCanvas.update(dt);
     }
     render() {
-        if (this.selfGremlin) {
+        if (this.selfGremlin && this.selfStartingPos.x != 0 && this.selfStartingPos.y != 0) {
             this.gCanvas.render(this.selfGremlin);
         }
     }
