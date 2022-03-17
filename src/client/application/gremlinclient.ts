@@ -5,11 +5,13 @@ import gcGremlin from '../player/gcgremlin.js';
 import GremlinCanvas from './gremlincanvas.js';
 
 import gcCommand from '../player/commands/gcCommand.js';
+import Vec2 from '../math/gcVec2.js';
 
 export default class GremlinClient {
     private socket: io;
     private gremlinID: string;
     private gremlinUserName: string;
+    private selfGremlin!: gcGremlin;
     private fellowGremlins: Map<string, gcGremlin>;
     private isPlaying: boolean;
 
@@ -17,8 +19,7 @@ export default class GremlinClient {
     private timeOfLastUpdate: number;
     private gCanvas: GremlinCanvas;
 
-    private hasEmittedThisFrame: boolean = false;
-
+    private mousePos: Vec2;
 
     constructor() {
         console.log('henlo this is the client speaking');
@@ -32,12 +33,12 @@ export default class GremlinClient {
 
         this.dt = 0;
         this.timeOfLastUpdate = 0;
+        this.mousePos = new Vec2(0, 0);
     }
 
     public start() {
         this.socket.on('connect', () => {
             this.gremlinID = this.socket.id;
-            this.shoutID();
 
             //(3/12/22) socket callbacks
             //each function corresponds to its own socket.io message 
@@ -47,9 +48,10 @@ export default class GremlinClient {
             
         });
 
+        //(3/16/22) input callbacks
         document.onkeyup = this.handleKeyUp.bind(this);
         document.onkeydown = this.handleKeyDown.bind(this);
-        //document.onmousemove = this
+        document.onmousemove = this.handleMouseMove.bind(this);
     }
 
 
@@ -65,7 +67,7 @@ export default class GremlinClient {
         this.loop();
     }
 
-    //callbacks
+    //socket callbacks
 
     private gsWelcome() {
         this.socket.on('gsWelcome', (n: number) => {
@@ -102,6 +104,11 @@ export default class GremlinClient {
                     else {
                         this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
                     }
+
+                    //(3/16/22) this sets selfGremlin every GremlinPackage, probably overkill but oh well
+                    if (existingGremlin?.gremlinID == this.gremlinID) {
+                        this.selfGremlin = existingGremlin;
+                    }
                 }
 
                 //(3/13/22) logging once every 50 update packages sounds reasonable, don't want to flood the console
@@ -112,26 +119,17 @@ export default class GremlinClient {
         });
     }
 
-    //end of callbacks
+    //end of socket callbacks
 
-    private shoutID() {
-        console.log(`shouting shoutING ${this.gremlinID}`);
-    }
 
     private loop(): void {
         if (this.isPlaying) {
             this.dt = performance.now() - this.timeOfLastUpdate;
             this.timeOfLastUpdate = performance.now();
 
-            this.hasEmittedThisFrame = false;
-
 
             this.update(this.dt);
             this.render();
-            // const cmd = this.handleInput();
-            // if (cmd) {
-            //     this.socket.emit('gcCommand', cmd);
-            // }
 
             requestAnimationFrame(this.loop.bind(this));
         }
@@ -181,6 +179,15 @@ export default class GremlinClient {
                     this.socket.emit('gcStateChangeCommand', stopMoveRightCommand);
                     break;
             }
+        }
+    }
+
+    private handleMouseMove(mEvt: MouseEvent): void {
+        if (this.isPlaying) {
+            this.mousePos.x = mEvt.clientX - this.gCanvas.getBoundingBox().x
+            this.mousePos.y = mEvt.clientY - this.gCanvas.getBoundingBox().y;
+
+            this.selfGremlin.updateAimingPos(this.mousePos);
         }
     }
 

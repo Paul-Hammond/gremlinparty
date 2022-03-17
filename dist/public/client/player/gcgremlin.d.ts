@@ -4,8 +4,12 @@ export default class gcGremlin {
     readonly username: string;
     pos: Vec2;
     targetPos: Vec2;
-    sprite: HTMLImageElement;
+    private centerPos;
+    aimingPos: Vec2;
+    private sprite;
     constructor(id: string, name: string, startingPos: Vec2);
     getPosition(): Vec2;
+    updateAimingPos(newPos: Vec2): void;
     update(dt: number): void;
+    render(ctx: CanvasRenderingContext2D): void;
 }
