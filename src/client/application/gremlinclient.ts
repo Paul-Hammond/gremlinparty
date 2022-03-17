@@ -113,11 +113,14 @@ export default class GremlinClient {
                 if (existingGremlin) {
                     this.fellowGremlins.delete(this.selfGremlin.gremlinID);
                     const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, existingGremlin.pos);
-                    newGremlin.targetPos = this.selfGremlin.pos;
-                    newGremlin.updateAimingPos(existingGremlin.aimingPos);
+                    if (newGremlin) {
+                        newGremlin.targetPos = this.selfGremlin.pos;
+                        newGremlin.updateAimingPos(existingGremlin.aimingPos);
+                        this.fellowGremlins.set(this.selfGremlin.gremlinID, newGremlin);
+                        this.selfGremlin = newGremlin;
+                    }
 
-                    this.fellowGremlins.set(this.selfGremlin.gremlinID, newGremlin);
-                    this.selfGremlin = newGremlin;
+
                 }
                 else {
                     const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, this.selfGremlin.pos);
