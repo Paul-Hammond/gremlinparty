@@ -12,6 +12,7 @@ export default class GremlinClient {
     private gremlinID: string;
     private gremlinUserName: string;
     private selfGremlin!: gcGremlin;
+    private selfStartingPos: Vec2;
     private fellowGremlins: Map<string, gcGremlin>;
     private isPlaying: boolean;
 
@@ -35,6 +36,7 @@ export default class GremlinClient {
         this.dt = 0;
         this.timeOfLastUpdate = 0;
         this.mousePos = new Vec2(0, 0);
+        this.selfStartingPos = new Vec2(0, 0);
         this.timeOfLastMouseEmit = 0;
     }
 
@@ -72,8 +74,10 @@ export default class GremlinClient {
     //socket callbacks
 
     private gsWelcome() {
-        this.socket.on('gsWelcome', (n: number) => {
-            console.log(`server emitted gsWelcome with ${n} connected users`);
+        this.socket.on('gsWelcome', (startingPos: Vec2) => {
+            console.log(`server emitted gsWelcome with ${startingPos.x}, ${startingPos.y} starting pos`);
+            this.selfStartingPos.x = startingPos.x;
+            this.selfStartingPos.y = startingPos.y;
         });
     }
 
@@ -119,8 +123,9 @@ export default class GremlinClient {
                     this.selfGremlin = existingGremlin;
                 }
                 else {
-                    const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, this.selfGremlin.pos);
-                    this.fellowGremlins.set(this.selfGremlin.gremlinID, newGremlin);
+                    //(3/17/22) this runs when the player gremlin is first initialized
+                    const newGremlin = new gcGremlin(this.gremlinID, this.gremlinUserName, this.selfStartingPos);
+                    this.fellowGremlins.set(this.gremlinID, newGremlin);
                     this.selfGremlin = newGremlin;
                 }
 
@@ -199,7 +204,9 @@ export default class GremlinClient {
             this.mousePos.x = mEvt.clientX - this.gCanvas.getBoundingBox().x
             this.mousePos.y = mEvt.clientY - this.gCanvas.getBoundingBox().y;
 
-            this.selfGremlin.updateAimingPos(this.mousePos);
+            if (this.selfGremlin) {
+                this.selfGremlin.updateAimingPos(this.mousePos);
+            }
         }
     }
 
