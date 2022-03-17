@@ -64,9 +64,9 @@ export default class GremlinClient {
                     if (currentGremlin.gremlinID == this.gremlinID) {
                         this.selfGremlin = currentGremlin;
                     }
-                    // Paul - (03.15.22)
-                    // reassign existing gremlins and add new gremlins to map
                     else {
+                        // Paul - (03.15.22)
+                        // reassign existing gremlins and add new gremlins to map
                         const existingGremlin = this.fellowGremlins.get(currentGremlin.gremlinID);
                         if (existingGremlin) {
                             existingGremlin.targetPos = currentGremlin.pos;
@@ -78,14 +78,9 @@ export default class GremlinClient {
                 }
                 const existingGremlin = this.fellowGremlins.get(this.selfGremlin.gremlinID);
                 if (existingGremlin) {
-                    this.fellowGremlins.delete(this.selfGremlin.gremlinID);
-                    const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, existingGremlin.pos);
-                    if (newGremlin) {
-                        newGremlin.targetPos = this.selfGremlin.pos;
-                        newGremlin.updateAimingPos(existingGremlin.aimingPos);
-                        this.fellowGremlins.set(this.selfGremlin.gremlinID, newGremlin);
-                        this.selfGremlin = newGremlin;
-                    }
+                    existingGremlin.targetPos = this.selfGremlin.pos;
+                    this.fellowGremlins.set(this.gremlinID, existingGremlin);
+                    this.selfGremlin = existingGremlin;
                 }
                 else {
                     const newGremlin = new gcGremlin(this.selfGremlin.gremlinID, this.selfGremlin.name, this.selfGremlin.pos);
@@ -167,6 +162,8 @@ export default class GremlinClient {
         this.gCanvas.update(dt);
     }
     render() {
-        this.gCanvas.render();
+        if (this.selfGremlin) {
+            this.gCanvas.render(this.selfGremlin);
+        }
     }
 }

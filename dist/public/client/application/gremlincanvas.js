@@ -25,14 +25,17 @@ export default class GremlinCanvas {
             gremlin.update(dt);
         });
     }
-    render() {
+    render(self) {
         this.ctx.fillStyle = `rgb(140, 140, 140)`;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.font = '24px helvetica';
         this.ctx.fillStyle = 'black';
         this.ctx.fillText(this.fpsIndicator, 5, 20);
         this.fellowGremlins.forEach(gremlin => {
-            gremlin.render(this.ctx);
+            if (gremlin.gremlinID != self.gremlinID) {
+                gremlin.render(this.ctx);
+            }
         });
+        self.render(this.ctx);
     }
 }

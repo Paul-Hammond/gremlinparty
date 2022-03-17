@@ -10,5 +10,5 @@ export default class GremlinCanvas {
     getBoundingBox(): DOMRect;
     syncPlayers(gremlins: Array<gcGremlin>): void;
     update(dt: number): void;
-    render(): void;
+    render(self: gcGremlin): void;
 }
