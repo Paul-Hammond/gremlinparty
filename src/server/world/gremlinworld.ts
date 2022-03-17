@@ -3,6 +3,8 @@ import GremlinPackage from './gremlinpackage.js';
 
 // Paul - (03.15.22) - was getting import errors from performance
 import { performance } from 'perf_hooks';
+import CollisionDetector from '../math/collisiondetection.js';
+import Vec2 from '../math/vec2.js';
 
 export default class GremlinWorld {
     private dt: number;
@@ -24,6 +26,17 @@ export default class GremlinWorld {
         this.gameGremlins.forEach(gremlin => {
             gremlin.update(dt, this.gameGremlins);
         });
+        // this.gameGremlins.forEach(gremlin => {
+        //     this.gameGremlins.forEach(g => {
+        //         if (g.gremlinID != gremlin.gremlinID && CollisionDetector.axisAlignedBoundBox(g.pos, new Vec2(72, 72), gremlin.pos, new Vec2(72, 72))) {
+
+        //         } else {
+
+        //         }
+        //     });
+
+        // });
+
     }
 
     public dispatchCommandToID(id: string, gcStateChangeCommand: any) {

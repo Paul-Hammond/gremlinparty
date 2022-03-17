@@ -13,6 +13,15 @@ export default class MovementState extends GremlinState {
     addDirection(dir: Direction): void;
     removeDirection(dir: Direction): void;
     update(dt: number, gremlins: Array<Gremlin>): void;
+    private moveUp;
+    private moveDown;
+    private moveLeft;
+    private moveRight;
+    private moveUpLeft;
+    private moveUpRight;
+    private moveDownLeft;
+    private moveDownRight;
+    private checkCollision;
 }
 export declare enum Direction {
     Idle = 0,

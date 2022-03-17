@@ -1,5 +1,7 @@
 import GremlinState from './gremlinstate.js';
 import { getGremlinFromID } from '../gremlin.js';
+import CollisionDetector from '../../math/collisiondetection.js';
+import Vec2 from '../../math/vec2.js';
 export default class MovementState extends GremlinState {
     constructor(ownerID) {
         super(ownerID);
@@ -91,34 +93,139 @@ export default class MovementState extends GremlinState {
         else {
             this.direction = Direction.Idle;
         }
+        // Paul - (03.16.22) 
+        // refactored movement into seperate functions
+        // added a rough collision detection against other objects
+        //      collides with other gremlins right now
+        let pos = new Vec2(owner.pos.x, owner.pos.y);
         switch (this.direction) {
             case Direction.Up:
-                owner.pos.offsetY(-this.speed * dt);
+                this.moveUp(pos, dt, gremlins, owner);
                 break;
             case Direction.UpLeft:
-                owner.pos.offsetXY(-this.diagonalSpeed * dt, -this.diagonalSpeed * dt);
+                this.moveUpLeft(pos, dt, gremlins, owner);
                 break;
             case Direction.UpRight:
-                owner.pos.offsetXY(this.diagonalSpeed * dt, -this.diagonalSpeed * dt);
+                this.moveUpRight(pos, dt, gremlins, owner);
                 break;
             case Direction.Down:
-                owner.pos.offsetY(this.speed * dt);
+                this.moveDown(pos, dt, gremlins, owner);
                 break;
             case Direction.DownLeft:
-                owner.pos.offsetXY(-this.diagonalSpeed * dt, this.diagonalSpeed * dt);
+                this.moveDownLeft(pos, dt, gremlins, owner);
                 break;
             case Direction.DownRight:
-                owner.pos.offsetXY(this.diagonalSpeed * dt, this.diagonalSpeed * dt);
+                this.moveDownRight(pos, dt, gremlins, owner);
                 break;
             case Direction.Left:
-                owner.pos.offsetX(-this.speed * dt);
+                this.moveLeft(pos, dt, gremlins, owner);
                 break;
             case Direction.Right:
-                owner.pos.offsetX(this.speed * dt);
+                this.moveRight(pos, dt, gremlins, owner);
                 break;
             case Direction.Idle:
                 break;
         }
+    }
+    // Paul - (03.16.22) 
+    // check for collisions and move the gremlin if no collision exist
+    moveUp(pos, dt, gremlins, owner) {
+        pos.offsetY(-this.speed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == false) {
+            owner.pos.offsetY(-this.speed * dt);
+            return true;
+        }
+        return false;
+    }
+    moveDown(pos, dt, gremlins, owner) {
+        pos.offsetY(this.speed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == false) {
+            owner.pos.offsetY(this.speed * dt);
+            return true;
+        }
+        return false;
+    }
+    moveLeft(pos, dt, gremlins, owner) {
+        pos.offsetX(-this.speed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == false) {
+            owner.pos.offsetX(-this.speed * dt);
+            return true;
+        }
+        return false;
+    }
+    moveRight(pos, dt, gremlins, owner) {
+        pos.offsetX(this.speed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == false) {
+            owner.pos.offsetX(this.speed * dt);
+            return true;
+        }
+        return false;
+    }
+    moveUpLeft(pos, dt, gremlins, owner) {
+        pos.offsetXY(-this.diagonalSpeed * dt, -this.diagonalSpeed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == true) { // if we collide going diagonal, check if we can still move in x or y
+            pos.x = owner.pos.x;
+            if (this.moveUp(pos, dt, gremlins, owner) == false) {
+                pos.y = owner.pos.y;
+                this.moveLeft(pos, dt, gremlins, owner);
+            }
+        }
+        else {
+            owner.pos.offsetXY(-this.diagonalSpeed * dt, -this.diagonalSpeed * dt);
+        }
+    }
+    moveUpRight(pos, dt, gremlins, owner) {
+        pos.offsetXY(this.diagonalSpeed * dt, -this.diagonalSpeed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == true) { // if we collide going diagonal, check if we can still move in x or y
+            pos.x = owner.pos.x; // reset position 
+            if (this.moveUp(pos, dt, gremlins, owner) == false) {
+                pos.y = owner.pos.y; // reset position
+                this.moveRight(pos, dt, gremlins, owner);
+            }
+        }
+        else { // doesn't collide
+            owner.pos.offsetXY(this.diagonalSpeed * dt, -this.diagonalSpeed * dt);
+        }
+    }
+    moveDownLeft(pos, dt, gremlins, owner) {
+        pos.offsetXY(-this.diagonalSpeed * dt, this.diagonalSpeed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == true) { // if we collide going diagonal, check if we can still move in x or y
+            pos.x = owner.pos.x;
+            if (this.moveDown(pos, dt, gremlins, owner) == false) {
+                pos.y = owner.pos.y;
+                this.moveLeft(pos, dt, gremlins, owner);
+            }
+        }
+        else { // doesn't collide
+            owner.pos.offsetXY(-this.diagonalSpeed * dt, this.diagonalSpeed * dt);
+        }
+    }
+    // Paul - (03.16.22) 
+    moveDownRight(pos, dt, gremlins, owner) {
+        pos.offsetXY(this.diagonalSpeed * dt, this.diagonalSpeed * dt);
+        if (this.checkCollision(this.ownerID, pos, gremlins) == true) { // if we collide going diagonal, check if we can still move in x or y
+            pos.x = owner.pos.x;
+            if (this.moveDown(pos, dt, gremlins, owner) == false) {
+                pos.y = owner.pos.y;
+                this.moveRight(pos, dt, gremlins, owner);
+            }
+        }
+        else { // doesn't collide
+            owner.pos.offsetXY(this.diagonalSpeed * dt, this.diagonalSpeed * dt);
+        }
+    }
+    // Paul - (03.16.22)
+    // run a collision check on each gremlin 
+    // the number of checks needs to be reduced...hash table maybe? 
+    checkCollision(gremlinId, pos, gremlins) {
+        var collision = false;
+        gremlins.forEach(g => {
+            // 72 is the height and width of the gremlin currently. Need a better way to get the width/height of collision objects
+            if (g.gremlinID != gremlinId && CollisionDetector.axisAlignedBoundBox(g.pos, new Vec2(72 - 15, 72 - 22), pos, new Vec2(72 - 15, 72 - 22))) {
+                collision = true;
+            }
+        });
+        return collision;
     }
 }
 export var Direction;
