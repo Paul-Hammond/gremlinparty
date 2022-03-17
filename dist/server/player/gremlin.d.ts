@@ -5,10 +5,6 @@ export default class Gremlin {
     pos: Vec2;
     private state;
     isPlaying: boolean;
-    isMovingUp: boolean;
-    isMovingDown: boolean;
-    isMovingLeft: boolean;
-    isMovingRight: boolean;
     constructor(id: string, startingPos: Vec2);
     startPlaying(name: string): void;
     receivegcCommand(gcCommand: any): void;

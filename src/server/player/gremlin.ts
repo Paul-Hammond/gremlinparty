@@ -15,10 +15,6 @@ export default class Gremlin {
     //every gremlin on the client (gcGremlin) is assumed to be playing
     public isPlaying = false;
 
-    public isMovingUp = false;
-    public isMovingDown = false;
-    public isMovingLeft = false;
-    public isMovingRight = false;
 
     constructor(id: string, startingPos: Vec2) {
         this.gremlinID = id;
