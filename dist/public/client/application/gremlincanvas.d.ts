@@ -7,6 +7,7 @@ export default class GremlinCanvas {
     private fellowGremlins;
     constructor();
     initCanvas(): void;
+    getBoundingBox(): DOMRect;
     syncPlayers(gremlins: Array<gcGremlin>): void;
     update(dt: number): void;
     render(): void;

@@ -19,7 +19,7 @@ export default class MovementState extends GremlinState {
     constructor(ownerID: string) {
         super(ownerID);
         this.ownerID = ownerID;
-        this.speed = .5;
+        this.speed = .6;
         this.diagonalSpeed = this.speed * (Math.sqrt(2) / 2);
     }
 

@@ -11,7 +11,7 @@ export default class MovementState extends GremlinState {
         this.rightPressed = false;
         this.direction = Direction.Idle;
         this.ownerID = ownerID;
-        this.speed = .5;
+        this.speed = .6;
         this.diagonalSpeed = this.speed * (Math.sqrt(2) / 2);
     }
     addDirection(dir) {

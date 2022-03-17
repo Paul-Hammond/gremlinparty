@@ -24,6 +24,10 @@ export default class GremlinCanvas {
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext('2d');
     }
 
+    public getBoundingBox(): DOMRect {
+        return this.canvas.getBoundingClientRect();
+    }
+
     public syncPlayers(gremlins: Array<gcGremlin>) {
         this.fellowGremlins = gremlins;
     }
@@ -48,10 +52,7 @@ export default class GremlinCanvas {
         this.ctx.fillText(this.fpsIndicator, 5, 20);
 
         this.fellowGremlins.forEach(gremlin => {
-            this.ctx.drawImage(gremlin.sprite, gremlin.pos.x, gremlin.pos.y);
-            //nameLength is required to be able to center the gremlin's name above their head
-            const nameLength: number = this.ctx.measureText(gremlin.username).width;
-            this.ctx.fillText(gremlin.username, gremlin.pos.x + (gremlin.sprite.width / 2) - (nameLength / 2), gremlin.pos.y - 25);
+            gremlin.render(this.ctx);
         });
     }
 }
