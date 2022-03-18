@@ -32,6 +32,7 @@ export default class GremlinClient {
         document.onkeyup = this.handleKeyUp.bind(this);
         document.onkeydown = this.handleKeyDown.bind(this);
         document.onmousemove = this.handleMouseMove.bind(this);
+        document.onmousedown = this.handleMouseDown.bind(this);
     }
     receiveIDFromUser(name) {
         this.gremlinUserName = name;
@@ -94,8 +95,8 @@ export default class GremlinClient {
                     this.fellowGremlins.set(this.gremlinID, newGremlin);
                     this.selfGremlin = newGremlin;
                 }
-                //(3/13/22) logging once every 50 update packages sounds reasonable, don't want to flood the console
-                if (serverPackage[1] % 50 == 0) {
+                //(3/13/22) logging once every 100 update packages sounds reasonable, don't want to flood the console
+                if (serverPackage[1] % 100 == 0) {
                     console.log(`GremlinPackage count: ${serverPackage[1]}`);
                 }
             }
@@ -161,6 +162,16 @@ export default class GremlinClient {
             this.mousePos.y = mEvt.clientY - this.gCanvas.getBoundingBox().y;
             if (this.selfGremlin) {
                 this.selfGremlin.updateAimingPos(this.mousePos);
+            }
+        }
+    }
+    handleMouseDown(mEvt) {
+        if (this.isPlaying) {
+            switch (mEvt.button) {
+                //left click
+                case 0:
+                    this.socket.emit('gcMouseLeft', this.mousePos);
+                    break;
             }
         }
     }

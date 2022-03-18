@@ -90,6 +90,11 @@ class GremlinServer {
                 this.gremlinWorld.dispatchMouseUpdateToID(socket.id, mouseUpdate);
             });
 
+            socket.on('gcMouseLeft', (mouseLeft: any) => {
+                const gremlinName = getGremlinFromID(socket.id, this.connectedGremlins)!.getName();
+                console.log(`${gremlinName} sent mouseLeft: ${mouseLeft.x}, ${mouseLeft.y}`);
+            });
+
         });
 
         //(3/12/22) effectively the GremlinServer update function. emits the gsGremlinPackage message

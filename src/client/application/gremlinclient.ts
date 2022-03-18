@@ -56,6 +56,7 @@ export default class GremlinClient {
         document.onkeyup = this.handleKeyUp.bind(this);
         document.onkeydown = this.handleKeyDown.bind(this);
         document.onmousemove = this.handleMouseMove.bind(this);
+        document.onmousedown = this.handleMouseDown.bind(this);
     }
 
 
@@ -129,8 +130,8 @@ export default class GremlinClient {
                     this.selfGremlin = newGremlin;
                 }
 
-                //(3/13/22) logging once every 50 update packages sounds reasonable, don't want to flood the console
-                if (serverPackage[1] % 50 == 0) {
+                //(3/13/22) logging once every 100 update packages sounds reasonable, don't want to flood the console
+                if (serverPackage[1] % 100 == 0) {
                     console.log(`GremlinPackage count: ${serverPackage[1]}`);
                 }
             }
@@ -206,6 +207,17 @@ export default class GremlinClient {
 
             if (this.selfGremlin) {
                 this.selfGremlin.updateAimingPos(this.mousePos);
+            }
+        }
+    }
+
+    private handleMouseDown(mEvt: MouseEvent): void {
+        if (this.isPlaying) {
+            switch (mEvt.button) {
+                //left click
+                case 0:
+                    this.socket.emit('gcMouseLeft', this.mousePos);
+                    break;
             }
         }
     }
