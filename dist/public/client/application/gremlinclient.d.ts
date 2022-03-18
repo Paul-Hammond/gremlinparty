@@ -21,6 +21,7 @@ export default class GremlinClient {
     private handleKeyDown;
     private handleKeyUp;
     private handleMouseMove;
+    private handleMouseDown;
     private update;
     private render;
 }
