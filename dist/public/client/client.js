@@ -30,7 +30,7 @@ function createGremlinCanvasHTML() {
     gremlinVersion.id = 'gremlin-version';
     //******-----------ATTENTION-----------******
     //THIS WHAT YOU WANT TO EDIT EVERY RELEASE
-    gremlinVersion.textContent = 'gremlin party pre-alpha-v0.0.3 (latest build: March 17th, 2022)';
+    gremlinVersion.textContent = 'gremlin party pre-alpha-v0.0.4 (latest build: March 19th, 2022)';
     //LOOK HERE
     //******-----------ATTENTION-----------******
     const patchNotes = document.createElement('a');
