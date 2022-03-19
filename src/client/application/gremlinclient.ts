@@ -216,6 +216,7 @@ export default class GremlinClient {
             switch (mEvt.button) {
                 //left click
                 case 0:
+                    //la dee da testing git features
                     this.socket.emit('gcMouseLeft', this.mousePos);
                     break;
             }
