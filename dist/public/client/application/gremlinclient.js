@@ -2,10 +2,12 @@
 import { io } from 'https://cdn.socket.io/4.3.0/socket.io.esm.min.js';
 import gcGremlin from '../player/gcgremlin.js';
 import GremlinCanvas from './gremlincanvas.js';
-import gcCommand from '../player/commands/gcCommand.js';
 import Vec2 from '../math/gcVec2.js';
+import gcCommand from '../player/commands/gccommand.js';
+import gcBasicAttackCommand from '../player/commands/gcbasicattack.js';
 export default class GremlinClient {
     constructor() {
+        this.freg = false;
         console.log('henlo this is the client speaking');
         this.isPlaying = false;
         this.socket = io();
@@ -34,9 +36,10 @@ export default class GremlinClient {
         document.onmousemove = this.handleMouseMove.bind(this);
         document.onmousedown = this.handleMouseDown.bind(this);
     }
-    receiveIDFromUser(name) {
+    receiveIDFromUser(name, freg) {
         this.gremlinUserName = name;
         this.isPlaying = true;
+        this.freg = freg;
         this.gCanvas.initCanvas();
         console.log(`${this.gremlinID} sending name ${this.gremlinUserName} to server`);
         //(3/10/22) tell GremlinServer what your username is and wait for a gsWelcome event
@@ -68,6 +71,8 @@ export default class GremlinClient {
                     // Paul - (03.16.22)
                     // catch player gremlin from being added yet
                     if (currentGremlin.gremlinID == this.gremlinID) {
+                        if (currentGremlin.freg) {
+                        }
                         this.selfGremlin = currentGremlin;
                     }
                     else {
@@ -78,7 +83,7 @@ export default class GremlinClient {
                             existingGremlin.updateAimingPos(currentGremlin.aimingPosLatest);
                         }
                         else {
-                            this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
+                            this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos, currentGremlin.freg));
                         }
                     }
                 }
@@ -91,7 +96,7 @@ export default class GremlinClient {
                 }
                 else {
                     //(3/17/22) this runs when the player gremlin is first initialized
-                    const newGremlin = new gcGremlin(this.gremlinID, this.gremlinUserName, this.selfStartingPos);
+                    const newGremlin = new gcGremlin(this.gremlinID, this.gremlinUserName, this.selfStartingPos, this.freg);
                     this.fellowGremlins.set(this.gremlinID, newGremlin);
                     this.selfGremlin = newGremlin;
                 }
@@ -168,10 +173,11 @@ export default class GremlinClient {
     handleMouseDown(mEvt) {
         if (this.isPlaying) {
             switch (mEvt.button) {
-                //left click
+                //(3/20/22) left click
                 case 0:
                     mEvt.preventDefault();
-                    this.socket.emit('gcMouseLeft', this.mousePos);
+                    const basicAttackCommand = new gcBasicAttackCommand(this.socket.id, 'gcBasicAttackCommand', this.mousePos);
+                    this.socket.emit('gcBasicAttackCommand', basicAttackCommand);
                     break;
             }
         }

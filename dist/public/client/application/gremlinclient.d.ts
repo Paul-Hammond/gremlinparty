@@ -2,6 +2,7 @@ export default class GremlinClient {
     private socket;
     private gremlinID;
     private gremlinUserName;
+    private freg;
     private selfGremlin;
     private selfStartingPos;
     private fellowGremlins;
@@ -13,7 +14,7 @@ export default class GremlinClient {
     private timeOfLastMouseEmit;
     constructor();
     start(): void;
-    receiveIDFromUser(name: string): void;
+    receiveIDFromUser(name: string, freg: boolean): void;
     private gsWelcome;
     private gsFallenGremlin;
     private gsGremlinPackage;

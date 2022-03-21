@@ -56,9 +56,10 @@ class GremlinServer {
             socket.on('gcMouseUpdateCommand', (mouseUpdate) => {
                 this.gremlinWorld.dispatchMouseUpdateToID(socket.id, mouseUpdate);
             });
-            socket.on('gcMouseLeft', (mouseLeft) => {
+            socket.on('gcBasicAttackCommand', (basicAttack) => {
                 const gremlinName = getGremlinFromID(socket.id, this.connectedGremlins).getName();
-                console.log(`${gremlinName} sent mouseLeft: ${mouseLeft.x}, ${mouseLeft.y}`);
+                console.log(`${gremlinName} basic attack: ${basicAttack.mouseDir.x}, ${basicAttack.mouseDir.y}`);
+                this.gremlinWorld.dispatchCommandToID(basicAttack.senderGremlinID, basicAttack);
             });
         });
         //(3/12/22) effectively the GremlinServer update function. emits the gsGremlinPackage message

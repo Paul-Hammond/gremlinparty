@@ -90,9 +90,11 @@ class GremlinServer {
                 this.gremlinWorld.dispatchMouseUpdateToID(socket.id, mouseUpdate);
             });
 
-            socket.on('gcMouseLeft', (mouseLeft: any) => {
+            socket.on('gcBasicAttackCommand', (basicAttack: any) => {
                 const gremlinName = getGremlinFromID(socket.id, this.connectedGremlins)!.getName();
-                console.log(`${gremlinName} sent mouseLeft: ${mouseLeft.x}, ${mouseLeft.y}`);
+                console.log(`${gremlinName} basic attack: ${basicAttack.mouseDir.x}, ${basicAttack.mouseDir.y}`);
+                
+                this.gremlinWorld.dispatchCommandToID(basicAttack.senderGremlinID, basicAttack);
             });
 
         });

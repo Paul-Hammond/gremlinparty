@@ -9,12 +9,18 @@ const anonButton = document.getElementById('anon-button');
 function submitGremlinName(e) {
     e.preventDefault();
     createGremlinCanvasHTML();
-    gc.receiveIDFromUser(inpFormVal.value);
+    const name = inpFormVal.value;
+    if (name == 'freg') {
+        gc.receiveIDFromUser('freg', true);
+    }
+    else {
+        gc.receiveIDFromUser(name, false);
+    }
 }
 function goAnon(e) {
     e.preventDefault();
     createGremlinCanvasHTML();
-    gc.receiveIDFromUser('anon');
+    gc.receiveIDFromUser('anon', false);
 }
 //(3/15/22) this function now also controls the release/patch version. remember to sync it with github releases!
 function createGremlinCanvasHTML() {

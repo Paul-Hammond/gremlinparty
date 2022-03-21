@@ -1,10 +1,11 @@
 import Vec2 from '../math/gcVec2.js';
 import { lerp } from '../math/lerp.js';
 export default class gcGremlin {
-    constructor(id, name, startingPos) {
+    constructor(id, name, startingPos, freg) {
         this.gremlinID = id;
         this.name = name;
         this.pos = startingPos;
+        this.freg = freg;
         this.targetPos = startingPos;
         this.centerPos = startingPos;
         this.aimingPos = startingPos;
