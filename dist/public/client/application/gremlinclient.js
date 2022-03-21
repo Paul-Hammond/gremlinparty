@@ -3,7 +3,7 @@ import { io } from 'https://cdn.socket.io/4.3.0/socket.io.esm.min.js';
 import gcGremlin from '../player/gcgremlin.js';
 import GremlinCanvas from './gremlincanvas.js';
 import Vec2 from '../math/gcVec2.js';
-import gcCommand from '../player/commands/gccommand.js';
+import gcCommand from '../player/commands/clientcommand.js';
 import gcBasicAttackCommand from '../player/commands/gcbasicattack.js';
 export default class GremlinClient {
     constructor() {
