@@ -10,7 +10,12 @@ export default class gcGremlin {
         this.centerPos = startingPos;
         this.aimingPos = startingPos;
         this.sprite = new Image();
-        this.sprite.src = '/res/gremlins/gremlin-default.png';
+        if (this.freg) {
+            this.sprite.src = '/res/gremlins/freg.png';
+        }
+        else {
+            this.sprite.src = '/res/gremlins/gremlin-default.png';
+        }
     }
     getPosition() {
         const pos = this.pos;
