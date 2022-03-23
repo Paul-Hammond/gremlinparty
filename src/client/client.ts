@@ -14,13 +14,20 @@ const anonButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById
 function submitGremlinName(e: SubmitEvent) {
     e.preventDefault();
     createGremlinCanvasHTML();
-    gc.receiveIDFromUser(inpFormVal.value)
+    const name: string = inpFormVal.value;
+    if (name == 'freg') {
+        gc.receiveIDFromUser('freg', true);
+    }
+    else {
+
+        gc.receiveIDFromUser(name, false);
+    }
 }
 
 function goAnon(e: MouseEvent) {
     e.preventDefault();
     createGremlinCanvasHTML();
-    gc.receiveIDFromUser('anon');
+    gc.receiveIDFromUser('anon', false);
 }
 
 //(3/15/22) this function now also controls the release/patch version. remember to sync it with github releases!
@@ -39,7 +46,7 @@ function createGremlinCanvasHTML() {
 
     //******-----------ATTENTION-----------******
     //THIS WHAT YOU WANT TO EDIT EVERY RELEASE
-    gremlinVersion.textContent = 'gremlin party pre-alpha-v0.0.3 (latest build: March 17th, 2022)';
+    gremlinVersion.textContent = 'gremlin party pre-alpha-v0.0.4 (latest build: March 19th, 2022)';
     //LOOK HERE
     //******-----------ATTENTION-----------******
 

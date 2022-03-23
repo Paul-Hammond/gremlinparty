@@ -4,13 +4,16 @@ import { io } from 'https://cdn.socket.io/4.3.0/socket.io.esm.min.js';
 import gcGremlin from '../player/gcgremlin.js';
 import GremlinCanvas from './gremlincanvas.js';
 
-import gcCommand from '../player/commands/gcCommand.js';
 import Vec2 from '../math/gcVec2.js';
+
+import gcCommand from '../player/commands/clientcommand.js';
+import gcBasicAttackCommand from '../player/commands/gcbasicattack.js';
 
 export default class GremlinClient {
     private socket: io;
     private gremlinID: string;
     private gremlinUserName: string;
+    private freg: boolean = false;
     private selfGremlin!: gcGremlin;
     private selfStartingPos: Vec2;
     private fellowGremlins: Map<string, gcGremlin>;
@@ -56,12 +59,14 @@ export default class GremlinClient {
         document.onkeyup = this.handleKeyUp.bind(this);
         document.onkeydown = this.handleKeyDown.bind(this);
         document.onmousemove = this.handleMouseMove.bind(this);
+        document.onmousedown = this.handleMouseDown.bind(this);
     }
 
 
-    public receiveIDFromUser(name: string) {
+    public receiveIDFromUser(name: string, freg: boolean) {
         this.gremlinUserName = name;
         this.isPlaying = true;
+        this.freg = freg;
         this.gCanvas.initCanvas();
 
         console.log(`${this.gremlinID} sending name ${this.gremlinUserName} to server`);
@@ -99,6 +104,9 @@ export default class GremlinClient {
                     // Paul - (03.16.22)
                     // catch player gremlin from being added yet
                     if (currentGremlin.gremlinID == this.gremlinID) {
+                        if (currentGremlin.freg) {
+
+                        }
                         this.selfGremlin = currentGremlin;
                     }
                     else {
@@ -109,7 +117,7 @@ export default class GremlinClient {
                             existingGremlin.updateAimingPos(currentGremlin.aimingPosLatest);
                         }
                         else {
-                            this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos));
+                            this.fellowGremlins.set(currentGremlin.gremlinID, new gcGremlin(currentGremlin.gremlinID, currentGremlin.name, currentGremlin.pos, currentGremlin.freg));
                         }
                     }
                 }
@@ -124,13 +132,13 @@ export default class GremlinClient {
                 }
                 else {
                     //(3/17/22) this runs when the player gremlin is first initialized
-                    const newGremlin = new gcGremlin(this.gremlinID, this.gremlinUserName, this.selfStartingPos);
+                    const newGremlin = new gcGremlin(this.gremlinID, this.gremlinUserName, this.selfStartingPos, this.freg);
                     this.fellowGremlins.set(this.gremlinID, newGremlin);
                     this.selfGremlin = newGremlin;
                 }
 
-                //(3/13/22) logging once every 50 update packages sounds reasonable, don't want to flood the console
-                if (serverPackage[1] % 50 == 0) {
+                //(3/13/22) logging once every 100 update packages sounds reasonable, don't want to flood the console
+                if (serverPackage[1] % 100 == 0) {
                     console.log(`GremlinPackage count: ${serverPackage[1]}`);
                 }
             }
@@ -206,6 +214,19 @@ export default class GremlinClient {
 
             if (this.selfGremlin) {
                 this.selfGremlin.updateAimingPos(this.mousePos);
+            }
+        }
+    }
+
+    private handleMouseDown(mEvt: MouseEvent): void {
+        if (this.isPlaying) {
+            switch (mEvt.button) {
+                //(3/20/22) left click
+                case 0:
+                    mEvt.preventDefault();
+                    const basicAttackCommand: gcBasicAttackCommand = new gcBasicAttackCommand(this.socket.id, 'gcBasicAttackCommand', this.mousePos);
+                    this.socket.emit('gcBasicAttackCommand', basicAttackCommand);
+                    break;
             }
         }
     }

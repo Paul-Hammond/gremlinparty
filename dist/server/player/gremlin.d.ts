@@ -3,6 +3,7 @@ export default class Gremlin {
     readonly gremlinID: string;
     private name;
     pos: Vec2;
+    freg: boolean;
     aimingPosLatest: Vec2;
     private state;
     isPlaying: boolean;
