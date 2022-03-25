@@ -6,6 +6,7 @@ export default class Gremlin {
     readonly gremlinID: string;
     private name: string = 'UnnamedGremlin';
     public pos: Vec2;
+    public freg: boolean = false;
 
     //(3/17/22) this Vec2 is a good estimate of what the gremlin user is pointing at, but is up to one
     //full server tick (50ms) out of date
@@ -29,6 +30,10 @@ export default class Gremlin {
 
     public startPlaying(name: string): void {
         this.name = name;
+        if (this.name == 'freg') {
+            this.freg = true;
+        }
+
         this.isPlaying = true;
     }
 

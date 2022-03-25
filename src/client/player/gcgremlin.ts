@@ -6,6 +6,7 @@ import Collider from './core/collider.js';
 export default class gcGremlin extends Collider {
     readonly gremlinID: string;
     readonly name: string;
+    readonly freg: boolean;
     public pos: Vec2;
     public targetPos: Vec2;
     private centerPos: Vec2;
@@ -24,6 +25,7 @@ export default class gcGremlin extends Collider {
         this.gremlinID = id;
         this.name = name;
         this.pos = startingPos;
+        this.freg = freg;
         this.targetPos = startingPos;
         this.centerPos = startingPos;
         this.aimingPos = startingPos;

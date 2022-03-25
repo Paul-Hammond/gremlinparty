@@ -3,6 +3,7 @@ import MovementState, { Direction } from './state/movementstate.js';
 export default class Gremlin {
     constructor(id, startingPos) {
         this.name = 'UnnamedGremlin';
+        this.freg = false;
         //(3/13/22) server specific fields 
         //every gremlin on the client (gcGremlin) is assumed to be playing
         this.isPlaying = false;
@@ -13,6 +14,9 @@ export default class Gremlin {
     }
     startPlaying(name) {
         this.name = name;
+        if (this.name == 'freg') {
+            this.freg = true;
+        }
         this.isPlaying = true;
     }
     receivegcCommand(gcCommand) {
