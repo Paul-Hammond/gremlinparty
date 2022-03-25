@@ -16,9 +16,14 @@ export default class gcGremlin extends Collider {
     //(3/13/22) client specific
     private sprite: HTMLImageElement;
 
-    constructor(id: string, name: string, startingPos: Vec2) {
+    constructor(id: string, name: string, startingPos: Vec2, freg: boolean) {
         let sprite: HTMLImageElement = new Image();
-        sprite.src = '/res/gremlins/gremlin-default.png';
+        if (freg) {
+            sprite.src = '/res/gremlins/freg.png';
+        }
+        else {
+            sprite.src = '/res/gremlins/gremlin-default.png';
+        }
 
         super(new Size(sprite.width, sprite.height));
 

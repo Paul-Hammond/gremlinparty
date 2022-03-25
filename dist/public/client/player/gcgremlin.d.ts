@@ -1,5 +1,6 @@
 import Vec2 from '../math/gcVec2.js';
-export default class gcGremlin {
+import Collider from './core/collider.js';
+export default class gcGremlin extends Collider {
     readonly gremlinID: string;
     readonly name: string;
     readonly freg: boolean;

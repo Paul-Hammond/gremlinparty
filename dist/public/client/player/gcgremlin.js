@@ -1,7 +1,17 @@
 import Vec2 from '../math/gcVec2.js';
 import { lerp } from '../math/lerp.js';
-export default class gcGremlin {
+import Size from '../math/size.js';
+import Collider from './core/collider.js';
+export default class gcGremlin extends Collider {
     constructor(id, name, startingPos, freg) {
+        let sprite = new Image();
+        if (freg) {
+            sprite.src = '/res/gremlins/freg.png';
+        }
+        else {
+            sprite.src = '/res/gremlins/gremlin-default.png';
+        }
+        super(new Size(sprite.width, sprite.height));
         this.gremlinID = id;
         this.name = name;
         this.pos = startingPos;
@@ -9,13 +19,7 @@ export default class gcGremlin {
         this.targetPos = startingPos;
         this.centerPos = startingPos;
         this.aimingPos = startingPos;
-        this.sprite = new Image();
-        if (this.freg) {
-            this.sprite.src = '/res/gremlins/freg.png';
-        }
-        else {
-            this.sprite.src = '/res/gremlins/gremlin-default.png';
-        }
+        this.sprite = sprite;
     }
     getPosition() {
         const pos = this.pos;
