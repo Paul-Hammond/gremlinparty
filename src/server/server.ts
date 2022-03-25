@@ -90,6 +90,13 @@ class GremlinServer {
                 this.gremlinWorld.dispatchMouseUpdateToID(socket.id, mouseUpdate);
             });
 
+            socket.on('gcBasicAttackCommand', (basicAttack: any) => {
+                const gremlinName = getGremlinFromID(socket.id, this.connectedGremlins)!.getName();
+                console.log(`${gremlinName} basic attack: ${basicAttack.mouseDir.x}, ${basicAttack.mouseDir.y}`);
+                
+                this.gremlinWorld.dispatchCommandToID(basicAttack.senderGremlinID, basicAttack);
+            });
+
         });
 
         //(3/12/22) effectively the GremlinServer update function. emits the gsGremlinPackage message

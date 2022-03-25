@@ -4,6 +4,7 @@ import { lerp } from '../math/lerp.js';
 export default class gcGremlin {
     readonly gremlinID: string;
     readonly name: string;
+    readonly freg: boolean;
     public pos: Vec2;
     public targetPos: Vec2;
     private centerPos: Vec2;
@@ -13,15 +14,21 @@ export default class gcGremlin {
     //(3/13/22) client specific
     private sprite: HTMLImageElement;
 
-    constructor(id: string, name: string, startingPos: Vec2) {
+    constructor(id: string, name: string, startingPos: Vec2, freg: boolean) {
         this.gremlinID = id;
         this.name = name;
         this.pos = startingPos;
+        this.freg = freg;
         this.targetPos = startingPos;
         this.centerPos = startingPos;
         this.aimingPos = startingPos;
         this.sprite = new Image();
-        this.sprite.src = '/res/gremlins/gremlin-default.png';
+        if (this.freg) {
+            this.sprite.src = '/res/gremlins/freg.png';
+        }
+        else {
+            this.sprite.src = '/res/gremlins/gremlin-default.png';
+        }
     }
 
     public getPosition(): Vec2 {
