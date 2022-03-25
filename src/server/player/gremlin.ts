@@ -13,7 +13,7 @@ export default class Gremlin {
 
     private state: MovementState;
 
-    
+
     //(3/13/22) server specific fields 
 
     //every gremlin on the client (gcGremlin) is assumed to be playing
@@ -87,7 +87,7 @@ export function getGremlinFromID(id: string, gremlinArray: Array<Gremlin>): Grem
 }
 
 export function getGremlinFromIndex(index: number, gremlinArray: Array<Gremlin>): Gremlin | void {
-    for(let i = 0; i < gremlinArray.length; i++) {
+    for (let i = 0; i < gremlinArray.length; i++) {
         if (gremlinArray[i].gremlinID == gremlinArray[index].gremlinID) {
             return gremlinArray[i];
         }

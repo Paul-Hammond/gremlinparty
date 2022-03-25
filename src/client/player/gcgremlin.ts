@@ -1,7 +1,9 @@
 import Vec2 from '../math/gcVec2.js';
 import { lerp } from '../math/lerp.js';
+import Size from '../math/size.js';
+import Collider from './core/collider.js';
 
-export default class gcGremlin {
+export default class gcGremlin extends Collider {
     readonly gremlinID: string;
     readonly name: string;
     public pos: Vec2;
@@ -14,14 +16,18 @@ export default class gcGremlin {
     private sprite: HTMLImageElement;
 
     constructor(id: string, name: string, startingPos: Vec2) {
+        let sprite: HTMLImageElement = new Image();
+        sprite.src = '/res/gremlins/gremlin-default.png';
+
+        super(new Size(sprite.width, sprite.height));
+
         this.gremlinID = id;
         this.name = name;
         this.pos = startingPos;
         this.targetPos = startingPos;
         this.centerPos = startingPos;
         this.aimingPos = startingPos;
-        this.sprite = new Image();
-        this.sprite.src = '/res/gremlins/gremlin-default.png';
+        this.sprite = sprite;
     }
 
     public getPosition(): Vec2 {
@@ -44,7 +50,7 @@ export default class gcGremlin {
     public render(ctx: CanvasRenderingContext2D): void {
         ctx.drawImage(this.sprite, this.pos.x, this.pos.y);
         //(3/16/22) nameLength is required to be able to center the gremlin's name above their head
-        const nameLength: number = ctx.measureText(this.name).width; 
+        const nameLength: number = ctx.measureText(this.name).width;
         ctx.fillText(this.name, this.pos.x + (this.sprite.width / 2) - (nameLength / 2), this.pos.y - 25);
 
         ctx.beginPath();
